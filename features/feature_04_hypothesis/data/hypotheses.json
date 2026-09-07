@@ -1,0 +1,124 @@
+{
+  "_meta": {
+    "purpose": "Competing-hypothesis structure for suspect classification (ACH spirit: equal display + refutation focus; log-odds mechanics). Likelihoods P(E|H) are HAND-SET engineering judgements documented per indicator — they make the ranking transparent, they are NOT calibrated probabilities. Do not display percentages unless the caller supplies a calibration and sets allow_percentages=true.",
+    "indicator_observations": {
+      "velocity_minutes": {
+        "buckets": {
+          "fast": "<= 30",
+          "medium": "<= 480",
+          "slow": "> 480"
+        }
+      },
+      "account_age_days": {
+        "buckets": {
+          "fresh": "<= 30",
+          "established": "> 30"
+        }
+      },
+      "inbound_victim_calls": {
+        "buckets": {
+          "many": ">= 3",
+          "few": "< 3"
+        }
+      },
+      "dormancy_before_crime_days": {
+        "buckets": {
+          "dormant": ">= 60",
+          "active": "< 60"
+        }
+      }
+    }
+  },
+  "hypotheses": [
+    {
+      "label": "KINGPIN_ORGANIZER",
+      "description": "Operates the scheme; originates instructions; funds move through others' accounts.",
+      "prior": 0.3333
+    },
+    {
+      "label": "LAYER1_MULE",
+      "description": "Rented/sold account; fast pass-through of victim funds to downstream layers.",
+      "prior": 0.3333
+    },
+    {
+      "label": "COMPROMISED_VICTIM",
+      "description": "Genuine account owner whose credentials/account were misused.",
+      "prior": 0.3334
+    }
+  ],
+  "indicators": [
+    {
+      "name": "pass_through_speed",
+      "observation_key": "velocity_minutes",
+      "evidence": {
+        "fast": {
+          "KINGPIN_ORGANIZER": 0.1,
+          "LAYER1_MULE": 0.8,
+          "COMPROMISED_VICTIM": 0.1
+        },
+        "medium": {
+          "KINGPIN_ORGANIZER": 0.3,
+          "LAYER1_MULE": 0.45,
+          "COMPROMISED_VICTIM": 0.25
+        },
+        "slow": {
+          "KINGPIN_ORGANIZER": 0.4,
+          "LAYER1_MULE": 0.05,
+          "COMPROMISED_VICTIM": 0.55
+        }
+      },
+      "note": "Pass-through within minutes is the classic mule signature."
+    },
+    {
+      "name": "account_age",
+      "observation_key": "account_age_days",
+      "evidence": {
+        "fresh": {
+          "KINGPIN_ORGANIZER": 0.15,
+          "LAYER1_MULE": 0.65,
+          "COMPROMISED_VICTIM": 0.2
+        },
+        "established": {
+          "KINGPIN_ORGANIZER": 0.35,
+          "LAYER1_MULE": 0.15,
+          "COMPROMISED_VICTIM": 0.5
+        }
+      },
+      "note": "Mule accounts are typically opened shortly before use."
+    },
+    {
+      "name": "victim_contact",
+      "observation_key": "inbound_victim_calls",
+      "evidence": {
+        "many": {
+          "KINGPIN_ORGANIZER": 0.75,
+          "LAYER1_MULE": 0.15,
+          "COMPROMISED_VICTIM": 0.1
+        },
+        "few": {
+          "KINGPIN_ORGANIZER": 0.15,
+          "LAYER1_MULE": 0.4,
+          "COMPROMISED_VICTIM": 0.45
+        }
+      },
+      "note": "Multiple victims calling the same number indicates an operator, not a mule."
+    },
+    {
+      "name": "dormancy",
+      "observation_key": "dormancy_before_crime_days",
+      "evidence": {
+        "dormant": {
+          "KINGPIN_ORGANIZER": 0.2,
+          "LAYER1_MULE": 0.45,
+          "COMPROMISED_VICTIM": 0.35
+        },
+        "active": {
+          "KINGPIN_ORGANIZER": 0.35,
+          "LAYER1_MULE": 0.2,
+          "COMPROMISED_VICTIM": 0.45
+        }
+      },
+      "note": "Weakly diagnostic on its own."
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+# CyberDrishti AI — Backend Dependencies (exact pinned versions per Phase 1 spec)
+
+# Web framework
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+
+# Database
+sqlalchemy==2.0.35
+asyncpg==0.29.0
+aiosqlite==0.20.0
+psycopg[binary]==3.1.19
+alembic==1.13.2
+
+
+# Validation
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# PDF & document parsing
+pdfplumber==0.11.4
+camelot-py==0.11.0
+
+# Data manipulation
+pandas==2.2.3
+numpy==1.26.4
+
+# OCR
+paddleocr==2.8.1
+paddlepaddle==2.6.2
+pytesseract==0.3.13
+Pillow==10.4.0
+
+# Vector DB / RAG
+chromadb==0.5.11
+
+# Graph engine
+networkx==3.3
+python-louvain==0.16
+
+# ML — NER/classification
+sklearn-crfsuite==0.3.6
+scikit-learn==1.5.2
+seqeval==1.2.2
+
+# Fuzzy matching
+rapidfuzz==3.10.0
+
+# Deep learning (custom transformer + HingBERT)
+tokenizers==0.19.1
+torch==2.4.1
+transformers==4.44.0
+accelerate==0.34.2
+datasets==2.21.0
+
+# Auth
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# PDF report generation
+weasyprint==62.3
+jinja2==3.1.4
+reportlab==4.2.2
+
+# Misc utilities
+python-multipart==0.0.12
+python-dotenv==1.0.1
+httpx==0.27.2
+aiofiles==24.1.0
+
+# LLM (Ollama local inference)
+ollama==0.3.3
+
+# Caching / background tasks
+redis==5.0.8
+celery==5.4.0
+
+# Testing
+pytest==8.3.2
+pytest-asyncio==0.23.8
+httpx==0.27.2

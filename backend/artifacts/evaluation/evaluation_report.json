@@ -1,0 +1,547 @@
+{
+  "timestamp": "2026-09-02 16:51:38Z",
+  "locked_test_set": {
+    "num_documents": 5,
+    "regex_extractor": {
+      "strict": {
+        "true_positives": 22,
+        "false_positives": 14,
+        "false_negatives": 19,
+        "precision": 0.6111,
+        "recall": 0.5366,
+        "f1": 0.5714
+      },
+      "normalized": {
+        "true_positives": 25,
+        "false_positives": 11,
+        "false_negatives": 16,
+        "precision": 0.6944,
+        "recall": 0.6098,
+        "f1": 0.6494
+      },
+      "per_class": {
+        "ACCOUNT": {
+          "support": 4,
+          "predicted": 5,
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1": 0.8889
+        },
+        "AMOUNT": {
+          "support": 9,
+          "predicted": 11,
+          "precision": 0.6364,
+          "recall": 0.7778,
+          "f1": 0.7
+        },
+        "BANK": {
+          "support": 3,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "IFSC": {
+          "support": 3,
+          "predicted": 3,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "KEYWORD": {
+          "support": 6,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "LOCATION": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "OTP": {
+          "support": 1,
+          "predicted": 2,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6667
+        },
+        "PER": {
+          "support": 4,
+          "predicted": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "PHONE": {
+          "support": 5,
+          "predicted": 6,
+          "precision": 0.8333,
+          "recall": 1.0,
+          "f1": 0.9091
+        },
+        "UPI": {
+          "support": 4,
+          "predicted": 4,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "URL": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "latency_ms_total": 0.37,
+      "latency_ms_per_doc": 0.07
+    },
+    "crf_model": {
+      "strict": {
+        "true_positives": 14,
+        "false_positives": 29,
+        "false_negatives": 27,
+        "precision": 0.3256,
+        "recall": 0.3415,
+        "f1": 0.3333
+      },
+      "normalized": {
+        "true_positives": 15,
+        "false_positives": 28,
+        "false_negatives": 26,
+        "precision": 0.3488,
+        "recall": 0.3659,
+        "f1": 0.3571
+      },
+      "per_class": {
+        "ACCOUNT": {
+          "support": 4,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "AMOUNT": {
+          "support": 9,
+          "predicted": 10,
+          "precision": 0.3,
+          "recall": 0.3333,
+          "f1": 0.3158
+        },
+        "BANK": {
+          "support": 3,
+          "predicted": 3,
+          "precision": 0.3333,
+          "recall": 0.3333,
+          "f1": 0.3333
+        },
+        "IFSC": {
+          "support": 3,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "KEYWORD": {
+          "support": 6,
+          "predicted": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "LOCATION": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "OTP": {
+          "support": 1,
+          "predicted": 5,
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1": 0.3333
+        },
+        "PER": {
+          "support": 4,
+          "predicted": 9,
+          "precision": 0.4444,
+          "recall": 1.0,
+          "f1": 0.6154
+        },
+        "PHONE": {
+          "support": 5,
+          "predicted": 7,
+          "precision": 0.2857,
+          "recall": 0.4,
+          "f1": 0.3333
+        },
+        "UPI": {
+          "support": 4,
+          "predicted": 7,
+          "precision": 0.4286,
+          "recall": 0.75,
+          "f1": 0.5455
+        },
+        "URL": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "latency_ms_total": 0.79,
+      "latency_ms_per_doc": 0.16
+    },
+    "hybrid_extractor": {
+      "strict": {
+        "true_positives": 25,
+        "false_positives": 21,
+        "false_negatives": 16,
+        "precision": 0.5435,
+        "recall": 0.6098,
+        "f1": 0.5747
+      },
+      "normalized": {
+        "true_positives": 28,
+        "false_positives": 18,
+        "false_negatives": 13,
+        "precision": 0.6087,
+        "recall": 0.6829,
+        "f1": 0.6437
+      },
+      "per_class": {
+        "ACCOUNT": {
+          "support": 4,
+          "predicted": 5,
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1": 0.8889
+        },
+        "AMOUNT": {
+          "support": 9,
+          "predicted": 11,
+          "precision": 0.6364,
+          "recall": 0.7778,
+          "f1": 0.7
+        },
+        "BANK": {
+          "support": 3,
+          "predicted": 2,
+          "precision": 0.5,
+          "recall": 0.3333,
+          "f1": 0.4
+        },
+        "IFSC": {
+          "support": 3,
+          "predicted": 3,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "KEYWORD": {
+          "support": 6,
+          "predicted": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "LOCATION": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "OTP": {
+          "support": 1,
+          "predicted": 2,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6667
+        },
+        "PER": {
+          "support": 4,
+          "predicted": 11,
+          "precision": 0.1818,
+          "recall": 0.5,
+          "f1": 0.2667
+        },
+        "PHONE": {
+          "support": 5,
+          "predicted": 6,
+          "precision": 0.8333,
+          "recall": 1.0,
+          "f1": 0.9091
+        },
+        "UPI": {
+          "support": 4,
+          "predicted": 4,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "URL": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "latency_ms_total": 0.97,
+      "latency_ms_per_doc": 0.19
+    }
+  },
+  "adversarial_test_set": {
+    "num_documents": 4,
+    "regex_extractor": {
+      "strict": {
+        "true_positives": 3,
+        "false_positives": 6,
+        "false_negatives": 11,
+        "precision": 0.3333,
+        "recall": 0.2143,
+        "f1": 0.2609
+      },
+      "normalized": {
+        "true_positives": 3,
+        "false_positives": 6,
+        "false_negatives": 11,
+        "precision": 0.3333,
+        "recall": 0.2143,
+        "f1": 0.2609
+      },
+      "per_class": {
+        "ACCOUNT": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "AMOUNT": {
+          "support": 3,
+          "predicted": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "IFSC": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "KEYWORD": {
+          "support": 3,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "PER": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "PHONE": {
+          "support": 3,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 0.3333,
+          "f1": 0.5
+        },
+        "UPI": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "URL": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "latency_ms_total": 0.09,
+      "latency_ms_per_doc": 0.02
+    },
+    "crf_model": {
+      "strict": {
+        "true_positives": 8,
+        "false_positives": 8,
+        "false_negatives": 6,
+        "precision": 0.5,
+        "recall": 0.5714,
+        "f1": 0.5333
+      },
+      "normalized": {
+        "true_positives": 8,
+        "false_positives": 8,
+        "false_negatives": 6,
+        "precision": 0.5,
+        "recall": 0.5714,
+        "f1": 0.5333
+      },
+      "per_class": {
+        "ACCOUNT": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "AMOUNT": {
+          "support": 3,
+          "predicted": 3,
+          "precision": 0.6667,
+          "recall": 0.6667,
+          "f1": 0.6667
+        },
+        "IFSC": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "KEYWORD": {
+          "support": 3,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 0.3333,
+          "f1": 0.5
+        },
+        "OTP": {
+          "support": 0,
+          "predicted": 1,
+          "precision": 0.0,
+          "recall": 1.0,
+          "f1": 0.0
+        },
+        "PER": {
+          "support": 1,
+          "predicted": 6,
+          "precision": 0.1667,
+          "recall": 1.0,
+          "f1": 0.2857
+        },
+        "PHONE": {
+          "support": 3,
+          "predicted": 3,
+          "precision": 0.6667,
+          "recall": 0.6667,
+          "f1": 0.6667
+        },
+        "UPI": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "URL": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "latency_ms_total": 0.24,
+      "latency_ms_per_doc": 0.06
+    },
+    "hybrid_extractor": {
+      "strict": {
+        "true_positives": 5,
+        "false_positives": 11,
+        "false_negatives": 9,
+        "precision": 0.3125,
+        "recall": 0.3571,
+        "f1": 0.3333
+      },
+      "normalized": {
+        "true_positives": 5,
+        "false_positives": 11,
+        "false_negatives": 9,
+        "precision": 0.3125,
+        "recall": 0.3571,
+        "f1": 0.3333
+      },
+      "per_class": {
+        "ACCOUNT": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "AMOUNT": {
+          "support": 3,
+          "predicted": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "IFSC": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 1.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "KEYWORD": {
+          "support": 3,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 0.3333,
+          "f1": 0.5
+        },
+        "PER": {
+          "support": 1,
+          "predicted": 6,
+          "precision": 0.1667,
+          "recall": 1.0,
+          "f1": 0.2857
+        },
+        "PHONE": {
+          "support": 3,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 0.3333,
+          "f1": 0.5
+        },
+        "UPI": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "URL": {
+          "support": 1,
+          "predicted": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        }
+      },
+      "latency_ms_total": 0.34,
+      "latency_ms_per_doc": 0.08
+    }
+  }
+}

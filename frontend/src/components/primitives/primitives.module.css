@@ -1,0 +1,101 @@
+.btn {
+  height: 36px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-button);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: 500 14px var(--font-sans);
+  transition:
+    transform var(--dur-2) var(--ease-out),
+    background var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out);
+}
+.primary { background: #F2F1ED; color: #101114; }
+.primary:hover { background: #FFFFFF; transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.primary:active { transform: translateY(0) scale(0.98); transition-duration: 100ms; }
+.secondary { border: 1px solid rgba(255, 255, 255, 0.1); }
+.secondary:hover { background: var(--hover); border-color: var(--line-strong); }
+.ghost { height: auto; padding: 0; color: var(--text-secondary); transition: color var(--dur-2) var(--ease-out); }
+.ghost:hover { color: var(--text-primary); }
+.ghost svg { transition: transform var(--dur-2) var(--ease-out); }
+.ghost:hover svg { transform: translateX(3px); }
+
+.pm {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: var(--type-mono-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pm i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.high { color: var(--critical); }
+.medium { color: var(--warning); }
+.critical {
+  color: var(--critical);
+  background: var(--critical-tint);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 10px;
+  border-radius: var(--radius-chip);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font: var(--type-mono-xs);
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+  transition: border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+.chip:hover { border-color: var(--line-strong); color: var(--text-primary); }
+.note {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-chip);
+  padding: 4px 8px;
+  font: var(--type-mono-xs);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms var(--ease-out);
+  box-shadow: var(--shadow-1);
+  z-index: 10;
+}
+.chip:hover .note { opacity: 1; }
+
+.mk { display: inline-block; border-radius: 50%; flex: none; }
+.mkNEW { width: 8px; height: 8px; border: 1.5px solid var(--text-primary); }
+.mkSEEN, .mkREVISITED { width: 6px; height: 6px; background: var(--text-faint); }
+.mkRELATED { width: 6px; height: 6px; background: var(--intel); }
+
+.toggle {
+  width: 36px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.10);
+  position: relative;
+  flex: none;
+  transition: background var(--dur-2) var(--ease-out);
+}
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: transform var(--dur-2) var(--ease-out), background var(--dur-2) var(--ease-out);
+}
+.toggleOn { background: rgba(255, 255, 255, 0.16); }
+.toggleOn::after { transform: translateX(16px); background: var(--text-primary); }

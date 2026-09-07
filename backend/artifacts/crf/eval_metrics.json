@@ -1,0 +1,8 @@
+{
+  "model": "CRF",
+  "test_samples": 809,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "full_report": "              precision    recall  f1-score   support\n\n   B-ACCOUNT     1.0000    1.0000    1.0000       135\n    B-AMOUNT     1.0000    1.0000    1.0000       582\n      B-BANK     1.0000    1.0000    1.0000        50\n   B-KEYWORD     1.0000    1.0000    1.0000        86\n       B-OTP     1.0000    1.0000    1.0000        33\n       B-PER     1.0000    1.0000    1.0000       303\n     B-PHONE     1.0000    1.0000    1.0000       343\n       B-UPI     1.0000    1.0000    1.0000       170\n       B-URL     1.0000    1.0000    1.0000         6\n    I-AMOUNT     1.0000    1.0000    1.0000       285\n      I-BANK     1.0000    1.0000    1.0000        42\n       I-PER     1.0000    1.0000    1.0000       303\n           O     1.0000    1.0000    1.0000      7054\n\n    accuracy                         1.0000      9392\n   macro avg     1.0000    1.0000    1.0000      9392\nweighted avg     1.0000    1.0000    1.0000      9392\n"
+}

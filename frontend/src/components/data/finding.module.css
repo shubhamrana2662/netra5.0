@@ -1,0 +1,19 @@
+.fb {
+  margin-top: var(--space-8);
+}
+.body {
+  margin-top: var(--space-3);
+}
+.conf {
+  font: var(--type-mono-sm);
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  margin-top: var(--space-4);
+  text-transform: uppercase;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}

@@ -1,0 +1,28 @@
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+}
+.frame {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  height: 100%;
+  position: relative;
+}
+.view {
+  flex: 1;
+  overflow-y: auto;
+  outline: none;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 767px) {
+  .app { height: 100dvh; }
+  .frame { padding-bottom: var(--bottombar-h); }
+}

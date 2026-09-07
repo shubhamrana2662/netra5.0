@@ -1,0 +1,75 @@
+{
+  "_meta": {
+    "purpose": "Investigative action catalog. Statutory instruments per verified research (cutoff 2026-09-06): BNSS 106 = CrPC 102 (evidentiary seizure incl. account freeze; AP HC Blue Sea Ventures 2025 caveat), BNSS 107 (attachment of proceeds), BNSS 94 = CrPC 91 (production of documents, expressly electronic), 1930/CFCFRMS (I4C-run; banks execute stop-payment). Draft templates are structural placeholders — every output is labelled a DRAFT requiring IO signature and legal verification. Fill placeholders ONLY from case data; the engine refuses to invent values.",
+    "golden_hours_note": "Fraud funds layer out within hours (I4C golden-hour doctrine); urgency decays exponentially with configurable half-life."
+  },
+  "golden_hours": 2.0,
+  "actions": [
+    {
+      "code": "HELPLINE_1930_REFERRAL",
+      "description": "Refer the complaint into 1930/CFCFRMS so banks in the money trail place stop-payment holds.",
+      "category": "asset_preservation",
+      "statute": "I4C CFCFRMS SOP (no statutory order needed)",
+      "latency_hours": 0.5,
+      "friction_cost": 0.1,
+      "requires": ["complaint_ref"],
+      "draft_template": "Referral record: complaint {complaint_ref} forwarded to 1930/CFCFRMS for stop-payment across the beneficiary trail. DRAFT — verify complaint reference before transmission.",
+      "asset_scoped": false
+    },
+    {
+      "code": "FREEZE_ACCOUNT_EVIDENCE",
+      "description": "Written order to the beneficiary bank to freeze the account during investigation.",
+      "category": "asset_preservation",
+      "statute": "Section 106 BNSS (formerly Section 102 CrPC)",
+      "latency_hours": 1.0,
+      "friction_cost": 0.3,
+      "requires": ["account", "ifsc", "bank_name", "amount_unwithdrawn"],
+      "draft_template": "To: The Nodal Officer, {bank_name} ({ifsc}). Order under Section 106 BNSS: freeze debits on account {account} holding approximately Rs. {amount_unwithdrawn} connected to case crime. Report to the jurisdictional Magistrate as required. DRAFT — requires IO signature and legal verification before issue.",
+      "asset_scoped": true
+    },
+    {
+      "code": "ATTACH_PROCEEDS",
+      "description": "Attachment proceedings for traced proceeds of crime (beyond evidentiary freeze).",
+      "category": "asset_preservation",
+      "statute": "Section 107 BNSS",
+      "latency_hours": 24.0,
+      "friction_cost": 0.6,
+      "requires": ["account", "ifsc", "bank_name", "amount_unwithdrawn"],
+      "draft_template": "Application under Section 107 BNSS for attachment of proceeds in account {account} at {bank_name} ({ifsc}), approximately Rs. {amount_unwithdrawn}. DRAFT — requires IO signature and legal verification before filing.",
+      "asset_scoped": true
+    },
+    {
+      "code": "REQUISITION_CDR_IPDR",
+      "description": "Requisition CDR/IPDR/tower data for an unlinked number from the service provider.",
+      "category": "evidence_expansion",
+      "statute": "Section 94 BNSS (formerly Section 91 CrPC; expressly covers electronic records)",
+      "latency_hours": 48.0,
+      "friction_cost": 0.4,
+      "requires": ["phone", "period_start", "period_end"],
+      "draft_template": "Requisition under Section 94 BNSS to the service provider: furnish CDR/IPDR for {phone} from {period_start} to {period_end} for case investigation. DRAFT — requires IO signature; route via the jurisdictional mechanism in force.",
+      "asset_scoped": false
+    },
+    {
+      "code": "TOWER_DUMP",
+      "description": "Judicial-order tower dump for the crime window at the identified tower.",
+      "category": "evidence_expansion",
+      "statute": "Judicial order (court direction)",
+      "latency_hours": 168.0,
+      "friction_cost": 0.8,
+      "requires": ["cell_id", "period_start", "period_end"],
+      "draft_template": "Application to the learned Magistrate for a tower dump of cell {cell_id} between {period_start} and {period_end}. DRAFT — requires IO signature and legal verification.",
+      "asset_scoped": false
+    },
+    {
+      "code": "KYC_FETCH",
+      "description": "Account-opening documents and photograph from the beneficiary bank.",
+      "category": "identity_resolution",
+      "statute": "Bank nodal-officer request under investigation",
+      "latency_hours": 24.0,
+      "friction_cost": 0.3,
+      "requires": ["account", "bank_name"],
+      "draft_template": "Request to {bank_name}: furnish account-opening KYC for account {account}. DRAFT — requires IO signature.",
+      "asset_scoped": false
+    }
+  ]
+}

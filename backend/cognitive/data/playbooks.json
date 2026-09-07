@@ -1,0 +1,43 @@
+{
+  "_meta": {
+    "purpose": "Cyber-fraud MO playbook library (crime-script representation, Cornish 1994; structure modelled on MITRE Attack Flow's staged behavior sequencing). Sources for the staged patterns (verified 2026-09-06): I4C 'Digital Arrest' advisory (Mar 2025, i4c.mha.gov.in/advisories.aspx), NITI Aayog 'Digital Arrest: The Modern-Day Cyber Scam' (Apr 2025), NCRP-reported investment/task-fraud pattern. Detectors are regex fragments over normalized chat text — extend via this file only, never in code.",
+    "scoring": "Sequence similarity via normalized Levenshtein edit distance on stage tokens (DTW is for numeric series, not categorical scripts). Output is labelled SIMILARITY, never 'match probability'."
+  },
+  "playbooks": [
+    {
+      "name": "DIGITAL_ARREST_EXTORTION",
+      "source": "I4C Digital Arrest advisory (Mar 2025); NITI Aayog (Apr 2025)",
+      "stages": ["SPOOF_LE_NOTICE", "ISOLATION_VIDEO_CALL", "THREAT_ARREST", "EXTRACTION_TRANSFER", "DISPOSAL_BLOCK"],
+      "detectors": {
+        "SPOOF_LE_NOTICE": ["notice", "cbi", "crime branch", "narcotics", "customs", "parcel", "arrest warrant", "fIR.{0,10}aapke naam", "police"],
+        "ISOLATION_VIDEO_CALL": ["video call", "skype", "whatsapp call", "camera on", "stay on call", "mat kaato call"],
+        "THREAT_ARREST": ["andar", "jail", "non-bailable", "remand", "girftar", "arrest hone", "supreme court ke aadesh", "darwaza band"],
+        "EXTRACTION_TRANSFER": ["transfer", "bhejo", "verification", "clearance", "rtsa", "account mein daalo", "otp"],
+        "DISPOSAL_BLOCK": ["block", "number delete", "chat delete", "kaam ho gaya", "close kar"]
+      }
+    },
+    {
+      "name": "INVESTMENT_TASK_FRAUD",
+      "source": "NCRP-reported dominant typology (investment/task scams)",
+      "stages": ["LURE_SMALL_PROFIT", "VIP_UPSELL", "EXTRACTION_LARGE_DEPOSIT", "WITHDRAWAL_BLOCK", "DISPOSAL_GHOST"],
+      "detectors": {
+        "LURE_SMALL_PROFIT": ["daily profit", "part time", "task complete", "payout", "guaranteed return", "kamai"],
+        "VIP_UPSELL": ["vip", "level up", "premium member", "big task", "prepaid task"],
+        "EXTRACTION_LARGE_DEPOSIT": ["deposit", "invest karo", "add karo", "top up", " recharge"],
+        "WITHDRAWAL_BLOCK": ["withdrawal pending", "tax", "processing fee", "hold", "verify karo phir milega"],
+        "DISPOSAL_GHOST": ["account closed", "agent offline", "group left", "ban"]
+      }
+    },
+    {
+      "name": "ROMANCE_BAITING",
+      "source": "Long-standing NCRP-reported pattern",
+      "stages": ["GROOMING", "CRISIS_INVENTION", "EXTRACTION_GIFT", "DISPOSAL_GHOST"],
+      "detectors": {
+        "GROOMING": ["good morning", "miss you", "shaadi", "visa", "video dekho", "love you"],
+        "CRISIS_INVENTION": ["customs", "parcel stuck", "hospital", "emergency", "fine"],
+        "EXTRACTION_GIFT": ["send money", "bhej do", "gift", "help karo"],
+        "DISPOSAL_GHOST": ["bye forever", "delete", "never contact"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+# Docs and tests
+docs/
+backend/tests/
+backend/testdata/
+
+# Heavy ML dependencies & datasets (>500MB)
+backend/requirements.txt
+backend/requirements-ml.txt
+backend/artifacts/
+backend/ml/data/
+backend/ml/training/
+graph_engine/
+
+# ML weights & tabular datasets
+*.pkl
+*.bin
+*.pt
+*.pth
+*.h5
+*.onnx
+*.csv
+
+# Python cache & build scripts
+__pycache__/
+*.pyc
+*.sh
+*.ps1
+Dockerfile
+docker-compose.yml
+
+# Node dependencies & build caches
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+
+# System/Git files
+.DS_Store
+.git/
+
+# Local envs
+.env
+.env.local
+.venv/
+venv/

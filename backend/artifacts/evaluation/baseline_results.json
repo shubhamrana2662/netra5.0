@@ -1,0 +1,397 @@
+{
+  "metadata": {
+    "timestamp_utc": "2026-09-02T17:30:41Z",
+    "platform": "macOS-26.4-arm64-arm-64bit",
+    "processor": "arm",
+    "python_version": "3.12.13",
+    "torch_version": "2.13.0",
+    "git_commit": "89ee0b97ef5fa4ad86d15733cacedb5b257788f9",
+    "dataset_path": "backend/artifacts/evaluation/locked_test.conll",
+    "dataset_sha256": "2021b31ac9a2de1927e26862a4535e05ddec063e5f3cf8953c2951c4c984f8a4",
+    "model_weights": {
+      "cdlm_sha256": "ad3168998bdc08c8e9e7acce35eb32b125a69fea62153bbfc05652c50ac56ef2",
+      "hingbert_sha256": "81972a97427ece42420d2a4c08d544aab2642b967fd060205d8effbcd1176171",
+      "crf_sha256": "ff39b9444cae16b29642044576c0f58badef0752f9a907268fccd55487df8d70"
+    }
+  },
+  "models": {
+    "regex_baseline": {
+      "precision": 0.6512,
+      "recall": 0.6829,
+      "f1": 0.6667,
+      "latency_ms_mean": 0.12,
+      "latency_ms_p50": 0.1,
+      "latency_ms_p95": 0.19,
+      "report": {
+        "ACCOUNT": {
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1-score": 0.8571428571428571,
+          "support": 4
+        },
+        "AMOUNT": {
+          "precision": 0.3333333333333333,
+          "recall": 0.4444444444444444,
+          "f1-score": 0.380952380952381,
+          "support": 9
+        },
+        "BANK": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 3
+        },
+        "IFSC": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 3
+        },
+        "KEYWORD": {
+          "precision": 0.42857142857142855,
+          "recall": 0.5,
+          "f1-score": 0.4615384615384615,
+          "support": 6
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "OTP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "PER": {
+          "precision": 0.75,
+          "recall": 0.75,
+          "f1-score": 0.75,
+          "support": 4
+        },
+        "PHONE": {
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1-score": 0.9090909090909091,
+          "support": 5
+        },
+        "UPI": {
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1-score": 0.8571428571428571,
+          "support": 4
+        },
+        "URL": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 1
+        },
+        "micro avg": {
+          "precision": 0.6511627906976745,
+          "recall": 0.6829268292682927,
+          "f1-score": 0.6666666666666667,
+          "support": 41
+        },
+        "macro avg": {
+          "precision": 0.6677489177489178,
+          "recall": 0.6540404040404041,
+          "f1-score": 0.6559879514424969,
+          "support": 41
+        },
+        "weighted avg": {
+          "precision": 0.6765389082462253,
+          "recall": 0.6829268292682927,
+          "f1-score": 0.6731804780585269,
+          "support": 41
+        }
+      }
+    },
+    "crf_model": {
+      "precision": 0.3721,
+      "recall": 0.3902,
+      "f1": 0.381,
+      "latency_ms_mean": 0.23,
+      "latency_ms_p50": 0.09,
+      "latency_ms_p95": 0.66,
+      "report": {
+        "ACCOUNT": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4
+        },
+        "AMOUNT": {
+          "precision": 0.3,
+          "recall": 0.3333333333333333,
+          "f1-score": 0.3157894736842105,
+          "support": 9
+        },
+        "BANK": {
+          "precision": 0.3333333333333333,
+          "recall": 0.3333333333333333,
+          "f1-score": 0.3333333333333333,
+          "support": 3
+        },
+        "IFSC": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 3
+        },
+        "KEYWORD": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 6
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "OTP": {
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1-score": 0.33333333333333337,
+          "support": 1
+        },
+        "PER": {
+          "precision": 0.4444444444444444,
+          "recall": 1.0,
+          "f1-score": 0.6153846153846153,
+          "support": 4
+        },
+        "PHONE": {
+          "precision": 0.2857142857142857,
+          "recall": 0.4,
+          "f1-score": 0.3333333333333333,
+          "support": 5
+        },
+        "UPI": {
+          "precision": 0.5714285714285714,
+          "recall": 1.0,
+          "f1-score": 0.7272727272727273,
+          "support": 4
+        },
+        "URL": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 1
+        },
+        "micro avg": {
+          "precision": 0.37209302325581395,
+          "recall": 0.3902439024390244,
+          "f1-score": 0.380952380952381,
+          "support": 41
+        },
+        "macro avg": {
+          "precision": 0.28499278499278496,
+          "recall": 0.4606060606060606,
+          "f1-score": 0.33258607421286845,
+          "support": 41
+        },
+        "weighted avg": {
+          "precision": 0.25346496322106077,
+          "recall": 0.3902439024390244,
+          "f1-score": 0.2978715764338357,
+          "support": 41
+        }
+      }
+    },
+    "cyberdrishtilm": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "latency_ms_mean": 62.57,
+      "latency_ms_p50": 3.88,
+      "latency_ms_p95": 239.69,
+      "device": "mps",
+      "report": {
+        "ACCOUNT": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4
+        },
+        "AMOUNT": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 9
+        },
+        "BANK": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 3
+        },
+        "IFSC": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 3
+        },
+        "KEYWORD": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 6
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "OTP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "PER": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4
+        },
+        "PHONE": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 5
+        },
+        "UPI": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4
+        },
+        "URL": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "micro avg": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 41
+        },
+        "macro avg": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 41
+        },
+        "weighted avg": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 41
+        }
+      }
+    },
+    "hingbert": {
+      "precision": 0.25,
+      "recall": 0.2439,
+      "f1": 0.2469,
+      "latency_ms_mean": 28.89,
+      "latency_ms_p50": 29.5,
+      "latency_ms_p95": 39.47,
+      "device": "mps",
+      "report": {
+        "ACCOUNT": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4
+        },
+        "AMOUNT": {
+          "precision": 0.13333333333333333,
+          "recall": 0.2222222222222222,
+          "f1-score": 0.16666666666666669,
+          "support": 9
+        },
+        "BANK": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 3
+        },
+        "IFSC": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 3
+        },
+        "KEYWORD": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 6
+        },
+        "LOCATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "OTP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "PER": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4
+        },
+        "PHONE": {
+          "precision": 0.22727272727272727,
+          "recall": 1.0,
+          "f1-score": 0.37037037037037035,
+          "support": 5
+        },
+        "UPI": {
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1-score": 0.8571428571428571,
+          "support": 4
+        },
+        "URL": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1
+        },
+        "micro avg": {
+          "precision": 0.25,
+          "recall": 0.24390243902439024,
+          "f1-score": 0.24691358024691357,
+          "support": 41
+        },
+        "macro avg": {
+          "precision": 0.12369146005509642,
+          "recall": 0.1792929292929293,
+          "f1-score": 0.12674362674362671,
+          "support": 41
+        },
+        "weighted avg": {
+          "precision": 0.15454545454545454,
+          "recall": 0.24390243902439024,
+          "f1-score": 0.16537617757129952,
+          "support": 41
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,154 @@
+[
+  {
+    "id": "LOCKED-CASE-01-DOC-01",
+    "case_id": "CYB-2026-REAL-001",
+    "case_title": "Digital Arrest Extortion Syndicate - Fake Mumbai Cyber Cell",
+    "doc_type": "whatsapp",
+    "text": "Bhai sun, Ankita Verma ne bola hai ki target dar gaya hai. Usko bola parcel mein 500g MDMA mila hai customs ko. Usne turant sanjeev.kumar@okhdfc par Rs. 68000 transfer kar diye. Abhi bol rahe hain CBI verification ke liye aur 1.5 lakh bhejne honge account 50100492817281 IFSC HDFC0001042 mein. Suresh Tiwari ko bol call continue rakhe +919876543210 se.",
+    "tokens": [
+      "Bhai", "sun,", "Ankita", "Verma", "ne", "bola", "hai", "ki", "target", "dar", "gaya", "hai.",
+      "Usko", "bola", "parcel", "mein", "500g", "MDMA", "mila", "hai", "customs", "ko.",
+      "Usne", "turant", "sanjeev.kumar@okhdfc", "par", "Rs.", "68000", "transfer", "kar", "diye.",
+      "Abhi", "bol", "rahe", "hain", "CBI", "verification", "ke", "liye", "aur", "1.5", "lakh",
+      "bhejne", "honge", "account", "50100492817281", "IFSC", "HDFC0001042", "mein.",
+      "Suresh", "Tiwari", "ko", "bol", "call", "continue", "rakhe", "+919876543210", "se."
+    ],
+    "ner_tags": [
+      "O", "O", "B-PER", "I-PER", "O", "O", "O", "O", "O", "O", "O", "O",
+      "O", "O", "O", "O", "O", "B-KEYWORD", "O", "O", "B-KEYWORD", "O",
+      "O", "O", "B-UPI", "O", "B-AMOUNT", "I-AMOUNT", "O", "O", "O",
+      "O", "O", "O", "O", "B-KEYWORD", "B-KEYWORD", "O", "O", "O", "B-AMOUNT", "I-AMOUNT",
+      "O", "O", "O", "B-ACCOUNT", "O", "B-IFSC", "O",
+      "B-PER", "I-PER", "O", "O", "O", "O", "O", "B-PHONE", "O"
+    ],
+    "entities": [
+      {"type": "PER", "value": "Ankita Verma"},
+      {"type": "KEYWORD", "value": "MDMA"},
+      {"type": "KEYWORD", "value": "customs"},
+      {"type": "UPI", "value": "sanjeev.kumar@okhdfc"},
+      {"type": "AMOUNT", "value": "Rs. 68000"},
+      {"type": "KEYWORD", "value": "CBI"},
+      {"type": "KEYWORD", "value": "verification"},
+      {"type": "AMOUNT", "value": "1.5 lakh"},
+      {"type": "ACCOUNT", "value": "50100492817281"},
+      {"type": "IFSC", "value": "HDFC0001042"},
+      {"type": "PER", "value": "Suresh Tiwari"},
+      {"type": "PHONE", "value": "+919876543210"}
+    ]
+  },
+  {
+    "id": "LOCKED-CASE-01-DOC-02",
+    "case_id": "CYB-2026-REAL-001",
+    "case_title": "Digital Arrest Extortion Syndicate - Fake Mumbai Cyber Cell",
+    "doc_type": "bank_statement",
+    "text": "2026-05-10 | UPI/614829103819/sanjeev.kumar@okhdfc/CR/68000.00 | Pragati Cooperative Bank | A/C 981273401923 | Balance: 74210.50",
+    "tokens": [
+      "2026-05-10", "|", "UPI/614829103819/sanjeev.kumar@okhdfc/CR/68000.00", "|", "Pragati", "Cooperative", "Bank",
+      "|", "A/C", "981273401923", "|", "Balance:", "74210.50"
+    ],
+    "ner_tags": [
+      "O", "O", "B-UPI", "O", "B-BANK", "I-BANK", "I-BANK",
+      "O", "O", "B-ACCOUNT", "O", "O", "B-AMOUNT"
+    ],
+    "entities": [
+      {"type": "UPI", "value": "sanjeev.kumar@okhdfc"},
+      {"type": "BANK", "value": "Pragati Cooperative Bank"},
+      {"type": "ACCOUNT", "value": "981273401923"},
+      {"type": "AMOUNT", "value": "68000.00"}
+    ]
+  },
+  {
+    "id": "LOCKED-CASE-02-DOC-01",
+    "case_id": "CYB-2026-REAL-002",
+    "case_title": "Telegram High-Return Investment & Crypto Task Syndicate",
+    "doc_type": "telegram",
+    "text": "Mam congrats, your VIP Level 2 task is completed! To withdraw Rs. 240000 profit, please deposit refundable tax amount 45000 to merchant wallet rohit.sharma@paytm or transfer to Canara Bank account 019283746510 IFSC CNRB0002145. Do not share OTP 819203 with anyone. Support contact is +918822334455.",
+    "tokens": [
+      "Mam", "congrats,", "your", "VIP", "Level", "2", "task", "is", "completed!", "To", "withdraw",
+      "Rs.", "240000", "profit,", "please", "deposit", "refundable", "tax", "amount", "45000", "to",
+      "merchant", "wallet", "rohit.sharma@paytm", "or", "transfer", "to", "Canara", "Bank", "account",
+      "019283746510", "IFSC", "CNRB0002145.", "Do", "not", "share", "OTP", "819203", "with", "anyone.",
+      "Support", "contact", "is", "+918822334455."
+    ],
+    "ner_tags": [
+      "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O",
+      "B-AMOUNT", "I-AMOUNT", "O", "O", "O", "O", "O", "O", "B-AMOUNT", "O",
+      "O", "O", "B-UPI", "O", "O", "O", "B-BANK", "I-BANK", "O",
+      "B-ACCOUNT", "O", "B-IFSC", "O", "O", "O", "O", "B-OTP", "O", "O",
+      "O", "O", "O", "B-PHONE"
+    ],
+    "entities": [
+      {"type": "AMOUNT", "value": "Rs. 240000"},
+      {"type": "AMOUNT", "value": "45000"},
+      {"type": "UPI", "value": "rohit.sharma@paytm"},
+      {"type": "BANK", "value": "Canara Bank"},
+      {"type": "ACCOUNT", "value": "019283746510"},
+      {"type": "IFSC", "value": "CNRB0002145"},
+      {"type": "OTP", "value": "819203"},
+      {"type": "PHONE", "value": "+918822334455"}
+    ]
+  },
+  {
+    "id": "LOCKED-CASE-03-DOC-01",
+    "case_id": "CYB-2026-REAL-003",
+    "case_title": "Fake Electricity Bill Disconnection Phishing Scam",
+    "doc_type": "sms",
+    "text": "Dear consumer your electricity power will be disconnected tonight at 9:30 PM from electricity office because your previous month bill was not updated. Please immediately contact our officer Rahul Verma at 9988776655 or update via app http://bit.ly/power-bill-update to avoid penalty Rs. 5000.",
+    "tokens": [
+      "Dear", "consumer", "your", "electricity", "power", "will", "be", "disconnected", "tonight", "at", "9:30", "PM",
+      "from", "electricity", "office", "because", "your", "previous", "month", "bill", "was", "not", "updated.",
+      "Please", "immediately", "contact", "our", "officer", "Rahul", "Verma", "at", "9988776655", "or", "update",
+      "via", "app", "http://bit.ly/power-bill-update", "to", "avoid", "penalty", "Rs.", "5000."
+    ],
+    "ner_tags": [
+      "O", "O", "O", "O", "O", "O", "O", "B-KEYWORD", "O", "O", "O", "O",
+      "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O",
+      "O", "O", "O", "O", "O", "B-PER", "I-PER", "O", "B-PHONE", "O", "O",
+      "O", "O", "B-URL", "O", "O", "B-KEYWORD", "B-AMOUNT", "I-AMOUNT"
+    ],
+    "entities": [
+      {"type": "KEYWORD", "value": "disconnected"},
+      {"type": "PER", "value": "Rahul Verma"},
+      {"type": "PHONE", "value": "9988776655"},
+      {"type": "URL", "value": "http://bit.ly/power-bill-update"},
+      {"type": "KEYWORD", "value": "penalty"},
+      {"type": "AMOUNT", "value": "Rs. 5000"}
+    ]
+  },
+  {
+    "id": "LOCKED-CASE-04-DOC-01",
+    "case_id": "CYB-2026-REAL-004",
+    "case_title": "Mewat Sextortion & Loan App Recovery Syndicate",
+    "doc_type": "fir_narrative",
+    "text": "The complainant stated that on 14-06-2026 he received a WhatsApp video call from mobile number +917011223344 where an unknown female recorded his face. Shortly after, one Deepak Mishra called from 9123450987 demanding 80k INR threatening to circulate edited video to relatives in Jaipur. The victim sent 35000 to deepak.mishra@icici and remaining 45000 to State Bank of India account 30491827364 IFSC SBIN0001122.",
+    "tokens": [
+      "The", "complainant", "stated", "that", "on", "14-06-2026", "he", "received", "a", "WhatsApp", "video", "call",
+      "from", "mobile", "number", "+917011223344", "where", "an", "unknown", "female", "recorded", "his", "face.",
+      "Shortly", "after,", "one", "Deepak", "Mishra", "called", "from", "9123450987", "demanding", "80k", "INR",
+      "threatening", "to", "circulate", "edited", "video", "to", "relatives", "in", "Jaipur.", "The", "victim",
+      "sent", "35000", "to", "deepak.mishra@icici", "and", "remaining", "45000", "to", "State", "Bank", "of", "India",
+      "account", "30491827364", "IFSC", "SBIN0001122."
+    ],
+    "ner_tags": [
+      "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O",
+      "O", "O", "O", "B-PHONE", "O", "O", "O", "O", "O", "O", "O",
+      "O", "O", "O", "B-PER", "I-PER", "O", "O", "B-PHONE", "O", "B-AMOUNT", "I-AMOUNT",
+      "O", "O", "O", "O", "O", "O", "O", "O", "B-LOCATION", "O", "O",
+      "O", "B-AMOUNT", "O", "B-UPI", "O", "O", "B-AMOUNT", "O", "B-BANK", "I-BANK", "I-BANK", "I-BANK",
+      "O", "B-ACCOUNT", "O", "B-IFSC"
+    ],
+    "entities": [
+      {"type": "PHONE", "value": "+917011223344"},
+      {"type": "PER", "value": "Deepak Mishra"},
+      {"type": "PHONE", "value": "9123450987"},
+      {"type": "AMOUNT", "value": "80k INR"},
+      {"type": "LOCATION", "value": "Jaipur"},
+      {"type": "AMOUNT", "value": "35000"},
+      {"type": "UPI", "value": "deepak.mishra@icici"},
+      {"type": "AMOUNT", "value": "45000"},
+      {"type": "BANK", "value": "State Bank of India"},
+      {"type": "ACCOUNT", "value": "30491827364"},
+      {"type": "IFSC", "value": "SBIN0001122"}
+    ]
+  }
+]

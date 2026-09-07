@@ -1,0 +1,18 @@
+{
+  "_meta": {
+    "purpose": "Entity pools for synthetic case generation. All values are fictional. Pattern formats follow Indian public conventions (mobile ^[6-9]\\d{9}$, UPI handles, IFSC shape). Replace/extend freely — the engine reads this file, nothing is hardcoded."
+  },
+  "names": ["Arjun", "Beena", "Chirag", "Divya", "Eshaan", "Farah", "Gopal", "Hina", "Imran", "Jaya", "Kabir", "Lata", "Mohan", "Neha", "Omkar", "Priya", "Qadir", "Ritu", "Sameer", "Tara"],
+  "upi_suffixes": ["@okhdfcbank", "@okaxis", "@ybl", "@paytm", "@upi"],
+  "banks": [
+    {"name": "Sahyadri Commercial Bank", "ifsc_prefix": "SHCB"},
+    {"name": "Triveni Cooperative Bank", "ifsc_prefix": "TRVB"},
+    {"name": "Meridian Bank of India", "ifsc_prefix": "MRDN"}
+  ],
+  "circles": [
+    {"city": "Indraprastha", "lat": 28.61, "lon": 77.21, "towers": ["IPT-TWR-014", "IPT-TWR-021", "IPT-TWR-033"]},
+    {"city": "Vanarasi", "lat": 25.32, "lon": 82.98, "towers": ["VNS-TWR-002", "VNS-TWR-019"]},
+    {"city": "Kanyakadesha", "lat": 12.97, "lon": 77.59, "towers": ["KNK-TWR-011", "KNK-TWR-027"]}
+  ],
+  "decoy_topics": ["shaadi shopping", "cricket match plan", "family video call", "exam preparation", "neighbour complaint"]
+}

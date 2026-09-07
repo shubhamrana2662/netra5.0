@@ -1,0 +1,34 @@
+{
+  "_meta": {
+    "purpose": "Crime typology playbooks for synthetic case generation. Stage sequences follow publicly documented Indian cyber-fraud patterns (I4C 'Digital Arrest' advisory, Mar 2025; NITI Aayog 'Digital Arrest: The Modern-Day Cyber Scam', Apr 2025; NCRP-reported investment/task-fraud pattern). Templates are Hinglish with {placeholders} filled from pools.json. Nothing here is case data — it is playbook structure.",
+    "ground_truth_contract": "Every generated case ships with: entity values, money-flow edges, planted hidden links (pairs that never co-occur in one event), planted contradictions, and the typology label."
+  },
+  "typologies": {
+    "DIGITAL_ARREST": {
+      "description": "Fake law-enforcement 'digital arrest' extortion (I4C advisory pattern): spoof official contact, isolation via video call, coerced 'verification' transfer to a 'clearance' account, disposal.",
+      "stages": ["SPOOF_LE_NOTICE", "ISOLATION_VIDEO_CALL", "THREAT_ARREST", "EXTRACTION_TRANSFER", "DISPOSAL_BLOCK"],
+      "money_flow": {"l1_mules": 2, "l2_per_l1": 2, "offramps": 1},
+      "chat_templates": [
+        "ye {dept} ka notice aya hai aapke {case_ref} case mein, turant video call par aao",
+        "verification ke bina arrest ho jayega, darwaza band karke baitho",
+        "compliance ke liye {amount} {upi} par bhejo, 10 min mein",
+        "OTP {otp} aa raha hai, bol do turant",
+        "kaam ho gaya, number block kar do"
+      ],
+      "decoy_ratio": 0.25
+    },
+    "INVESTMENT_TASK": {
+      "description": "Trading/task-app fraud (NCRP-reported dominant category): small guaranteed payouts first, then larger 'VIP' deposits, then withdrawal blocked with 'tax' demands.",
+      "stages": ["LURE_SMALL_PROFIT", "VIP_UPSELL", "EXTRACTION_LARGE_DEPOSIT", "WITHDRAWAL_BLOCK", "DISPOSAL_GHOST"],
+      "money_flow": {"l1_mules": 3, "l2_per_l1": 1, "offramps": 2},
+      "chat_templates": [
+        "sir aaj ka task complete karo, {amount} instant profit milega",
+        "VIP level 3 kholne ke liye {amount} deposit karo {upi} par",
+        "withdrawal pending hai, 30% tax pehle bhejo",
+        "id block ho gaya hai, agent se baat karo",
+        "aapka account permanently closed hai"
+      ],
+      "decoy_ratio": 0.15
+    }
+  }
+}

@@ -1,0 +1,16 @@
+.title { font: var(--type-title-1); }
+.lede { color: var(--text-secondary); margin-top: var(--space-2); }
+
+.fndList { list-style: none; margin-top: var(--space-8); }
+.fndCard {
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  transition: border-color var(--dur-2) var(--ease-out);
+}
+.fndCard:hover { border-color: var(--line-strong); }
+.fndHead { display: flex; justify-content: space-between; align-items: baseline; }
+.fndScope { font: var(--type-mono-xs); color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.fndWhen { font: var(--type-mono-xs); color: var(--text-muted); }

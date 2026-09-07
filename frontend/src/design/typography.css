@@ -1,0 +1,20 @@
+.t-display-2 { font: var(--type-display-2); letter-spacing: -0.03em; }
+.t-display-1 { font: var(--type-display-1); letter-spacing: -0.025em; }
+.t-title-1   { font: var(--type-title-1);   letter-spacing: -0.02em; }
+.t-title-2   { font: var(--type-title-2);   letter-spacing: -0.015em; }
+.t-title-3   { font: var(--type-title-3);   letter-spacing: -0.01em; }
+.t-body-lg   { font: var(--type-body-lg); }
+.t-body      { font: var(--type-body); }
+.t-body-sm   { font: var(--type-body-sm); }
+.t-label {
+  font: var(--type-label);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.t-mono-sm { font: var(--type-mono-sm); }
+.t-mono-xs { font: var(--type-mono-xs); }
+
+@media (max-width: 767px) {
+  .t-title-1 { font-size: 32px; }
+}

@@ -1,0 +1,75 @@
+.topRow { display: flex; justify-content: space-between; align-items: flex-end; }
+.title { font: var(--type-title-1); }
+.lede { color: var(--text-secondary); margin-top: var(--space-2); }
+
+.tabs { display: flex; gap: var(--space-4); border-bottom: 1px solid var(--line); margin-top: var(--space-8); }
+.tab {
+  padding-bottom: var(--space-3);
+  font: var(--type-body);
+  color: var(--text-muted);
+  position: relative;
+  transition: color var(--dur-2) var(--ease-out);
+}
+.tab:hover { color: var(--text-secondary); }
+.tabActive { color: var(--text-primary); }
+.tabLine {
+  position: absolute; bottom: -1px; left: 0; right: 0; height: 2px;
+  background: var(--text-primary); border-radius: 1px;
+}
+
+.caseTable { list-style: none; margin-top: var(--space-4); }
+.caseRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-4);
+  border-top: 1px solid var(--line);
+  cursor: pointer;
+  border-radius: var(--radius-card);
+  transition: background 0.18s var(--ease-out), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+.caseRow:hover {
+  background: var(--row-hover);
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+.caseMain { min-width: 0; }
+.caseHead { display: flex; align-items: center; gap: 12px; }
+.caseId { font: var(--type-mono-xs); color: var(--text-muted); letter-spacing: 0.04em; }
+.caseName { font: 500 17px var(--font-sans); color: var(--text-primary); }
+.caseDomain { font: var(--type-body-sm); color: var(--text-secondary); margin-top: 4px; }
+.caseCounts {
+  display: flex; gap: var(--space-6); font: var(--type-mono-xs); color: var(--text-muted);
+  letter-spacing: 0.04em; margin-top: var(--space-3);
+}
+.caseCounts span b { color: var(--text-secondary); font-weight: 500; }
+.caseSide { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-3); flex: none; }
+.caseUpdated { font: var(--type-mono-xs); color: var(--text-muted); }
+
+.modalOverlay {
+  position: fixed; inset: 0; background: rgba(9, 10, 13, 0.75);
+  backdrop-filter: blur(8px); z-index: 100; display: flex;
+  align-items: center; justify-content: center; padding: var(--space-4);
+}
+.modalPanel {
+  background: var(--surface-1); border: 1px solid var(--line-strong);
+  border-radius: var(--radius-surface); width: min(520px, 100%);
+  box-shadow: var(--shadow-3); padding: var(--space-8);
+}
+.modalTitle { font: var(--type-title-3); color: var(--text-primary); }
+.modalSub { font: var(--type-body-sm); color: var(--text-secondary); margin-top: 4px; margin-bottom: var(--space-6); }
+.formGroup { margin-bottom: var(--space-4); display: flex; flex-direction: column; gap: 6px; }
+.formLabel { font: var(--type-mono-xs); color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.formInput, .formTextarea, .formSelect {
+  width: 100%; height: 38px; padding: 0 var(--space-3);
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: var(--radius-input); color: var(--text-primary);
+  font: var(--type-body-sm); outline: none; transition: border-color var(--dur-2) var(--ease-out);
+}
+.formTextarea { height: 80px; padding: var(--space-3); resize: vertical; }
+.formInput:focus, .formTextarea:focus, .formSelect:focus { border-color: var(--line-intense); }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+.modalActions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6); }
+.loadingState { padding: var(--space-12) 0; text-align: center; color: var(--text-muted); font: var(--type-body-sm); }
+

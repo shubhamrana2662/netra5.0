@@ -1,0 +1,76 @@
+[
+  {
+    "id": "ADV-01-DISGUISED-PHONE",
+    "description": "Phone number written with spaces and hyphens to evade simple regex",
+    "text": "Bhai mere dusre number pe WhatsApp karo : +91 98765 43210 ya call karo 98765-12345 pe urgent.",
+    "tokens": [
+      "Bhai", "mere", "dusre", "number", "pe", "WhatsApp", "karo", ":",
+      "+91", "98765", "43210", "ya", "call", "karo", "98765-12345", "pe", "urgent."
+    ],
+    "ner_tags": [
+      "O", "O", "O", "O", "O", "O", "O", "O",
+      "B-PHONE", "I-PHONE", "I-PHONE", "O", "O", "O", "B-PHONE", "O", "O"
+    ],
+    "entities": [
+      {"type": "PHONE", "value": "+91 98765 43210", "normalized": "+919876543210"},
+      {"type": "PHONE", "value": "98765-12345", "normalized": "+919876512345"}
+    ]
+  },
+  {
+    "id": "ADV-02-OCR-CHARACTER-CONFUSION",
+    "description": "OCR error where zero is recognized as capital letter O and one as lowercase l",
+    "text": "Transfer amount Rs. 5O,OOO to A/C SBINOOO1234 account number 5OlOO492817281",
+    "tokens": [
+      "Transfer", "amount", "Rs.", "5O,OOO", "to", "A/C", "SBINOOO1234", "account", "number", "5OlOO492817281"
+    ],
+    "ner_tags": [
+      "O", "O", "B-AMOUNT", "I-AMOUNT", "O", "O", "B-IFSC", "O", "O", "B-ACCOUNT"
+    ],
+    "entities": [
+      {"type": "AMOUNT", "value": "Rs. 5O,OOO", "normalized": "50000.0"},
+      {"type": "IFSC", "value": "SBINOOO1234", "normalized": "SBIN0001234"},
+      {"type": "ACCOUNT", "value": "5OlOO492817281", "normalized": "50100492817281"}
+    ]
+  },
+  {
+    "id": "ADV-03-SLANG-AND-MIXED-CURRENCY",
+    "description": "Indic colloquial multipliers: 2.5 peti / 50 peti / 2 khokha / 80 hazar",
+    "text": "Deal 2.5 lakh mein final hui thi, usne abhi tak sirf 80 hazar bheje hain gpay 9123456789@okhdfc par.",
+    "tokens": [
+      "Deal", "2.5", "lakh", "mein", "final", "hui", "thi,", "usne", "abhi", "tak", "sirf",
+      "80", "hazar", "bheje", "hain", "gpay", "9123456789@okhdfc", "par."
+    ],
+    "ner_tags": [
+      "O", "B-AMOUNT", "I-AMOUNT", "O", "O", "O", "O", "O", "O", "O", "O",
+      "B-AMOUNT", "I-AMOUNT", "O", "O", "O", "B-UPI", "O"
+    ],
+    "entities": [
+      {"type": "AMOUNT", "value": "2.5 lakh", "normalized": "250000.0"},
+      {"type": "AMOUNT", "value": "80 hazar", "normalized": "80000.0"},
+      {"type": "UPI", "value": "9123456789@okhdfc", "normalized": "9123456789@okhdfc"}
+    ]
+  },
+  {
+    "id": "ADV-04-PHISHING-HELPLINE-IMPERSONATION",
+    "description": "Scammer impersonating National Cyber Crime Reporting Portal helpline (1930)",
+    "text": "Cyber Crime Cell Alert: Your Aadhaar linked mobile is blocked under FIR 104/2026. Contact DSP Vikram Rathore immediately on 9811223344 or lodge defense at https://1930-cybercrime-gov.in/appeal",
+    "tokens": [
+      "Cyber", "Crime", "Cell", "Alert:", "Your", "Aadhaar", "linked", "mobile", "is", "blocked",
+      "under", "FIR", "104/2026.", "Contact", "DSP", "Vikram", "Rathore", "immediately", "on",
+      "9811223344", "or", "lodge", "defense", "at", "https://1930-cybercrime-gov.in/appeal"
+    ],
+    "ner_tags": [
+      "B-KEYWORD", "I-KEYWORD", "I-KEYWORD", "O", "O", "O", "O", "O", "O", "B-KEYWORD",
+      "O", "B-KEYWORD", "O", "O", "O", "B-PER", "I-PER", "O", "O",
+      "B-PHONE", "O", "O", "O", "O", "B-URL"
+    ],
+    "entities": [
+      {"type": "KEYWORD", "value": "Cyber Crime Cell"},
+      {"type": "KEYWORD", "value": "blocked"},
+      {"type": "KEYWORD", "value": "FIR"},
+      {"type": "PER", "value": "Vikram Rathore"},
+      {"type": "PHONE", "value": "9811223344"},
+      {"type": "URL", "value": "https://1930-cybercrime-gov.in/appeal"}
+    ]
+  }
+]

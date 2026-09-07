@@ -1,0 +1,71 @@
+# Environment Variables & Secrets (CRITICAL: Never commit these)
+.env
+.env.*
+*.env
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+frontend/.env.local
+
+# Python & Virtual Environments
+backend/venv
+backend/venv/
+venv/
+.venv/
+backend/python310/
+backend/__pycache__/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Binaries & Installers
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+
+# Database & Storage
+backend/pgsql/
+*.db
+*.sqlite3
+*.ses
+
+# Machine Learning Artifacts & Embeddings
+backend/artifacts/cyberdrishtilm/
+backend/artifacts/hingbert/
+backend/artifacts/*.pkl
+backend/artifacts/chroma_db/
+backend/training_data/
+
+# Evidence Uploads & Generated Reports
+backend/uploads/
+backend/reports/
+*.pdf
+
+# Node / Frontend Build Artifacts
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+dist/
+frontend/tsconfig.tsbuildinfo
+
+# IDE, OS & AI Tool Metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/
+.gemini/
+.agents/
+*.log
+*.tmp
+frontend_backup/
+*.zip
+cyberdrishti-3d-login/
+

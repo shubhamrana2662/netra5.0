@@ -1,0 +1,79 @@
+.layout { display: grid; grid-template-columns: 200px 1fr; gap: var(--space-12); margin-top: var(--space-8); }
+.nav { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+.navBtn {
+  text-align: left; padding: var(--space-2) var(--space-3); border-radius: var(--radius-input);
+  color: var(--text-secondary); font: var(--type-body); transition: all var(--dur-2) var(--ease-out);
+  cursor: pointer; background: transparent; border: none; width: 100%;
+}
+.navBtn:hover { background: var(--hover); color: var(--text-primary); }
+.navBtnActive { background: var(--surface-2); color: var(--text-primary); font-weight: 500; }
+
+.panel {
+  background: var(--surface-1); border: 1px solid var(--line); border-radius: var(--radius-card);
+  padding: var(--space-6);
+}
+.panelTitle { font: var(--type-title-3); }
+.panelLede { color: var(--text-secondary); font: var(--type-body-sm); margin-top: 4px; margin-bottom: var(--space-6); }
+.row {
+  display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) 0;
+  border-top: 1px solid var(--line);
+}
+.rowLabel { font: 500 15px var(--font-sans); color: var(--text-primary); }
+.rowDesc { font: var(--type-body-sm); color: var(--text-muted); margin-top: 2px; }
+
+.sectionCard {
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-card);
+  padding: var(--space-4); margin-bottom: var(--space-6);
+}
+.statRow {
+  display: flex; justify-content: space-between; align-items: center; padding: 8px 0;
+  border-bottom: 1px solid var(--line); font: var(--type-mono-xs);
+}
+.statRow:last-child { border-bottom: none; }
+
+.table {
+  width: 100%; border-collapse: collapse; font: var(--type-body-sm);
+  margin-top: var(--space-4);
+}
+.table th {
+  text-align: left; padding: 10px 12px; color: var(--text-muted);
+  font: var(--type-mono-xs); text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--line);
+}
+.table td {
+  padding: 10px 12px; border-bottom: 1px solid var(--line);
+  color: var(--text-secondary);
+}
+.table tr:hover td { background: var(--hover); }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px;
+  border-radius: var(--radius-pill); font: var(--type-mono-xs); text-transform: uppercase;
+}
+.badgeActive { background: rgba(16, 185, 129, 0.15); color: var(--verified); border: 1px solid rgba(16, 185, 129, 0.3); }
+.badgeStandby { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+.badgeRole { background: var(--surface-1); color: var(--intel); border: 1px solid var(--line); }
+
+.fieldInput, .fieldSelect {
+  width: 100%; height: 38px; padding: 0 var(--space-3);
+  background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: var(--radius-input); color: var(--text-primary);
+  font: var(--type-body-sm); outline: none; transition: border-color 0.2s;
+}
+.fieldInput:focus, .fieldSelect:focus { border-color: var(--line-strong); }
+
+.modalOverlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+.modalBox {
+  background: var(--surface-1); border: 1px solid var(--line-strong);
+  border-radius: var(--radius-card); padding: var(--space-6); width: 100%;
+  max-width: 520px; box-shadow: var(--shadow-2);
+}
+
+@media (max-width: 767px) {
+  .layout { grid-template-columns: 1fr; }
+}
+

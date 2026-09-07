@@ -1,0 +1,600 @@
+/* ── CyberDrishti AI — Cognitive Forensic Intelligence Tab ─────────────── */
+/* Premium dark-glass aesthetic with animated status indicators            */
+
+.cogRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-bottom: var(--space-12);
+}
+
+/* ── Engine Selector Ribbon ───────────────────────────────────────────── */
+
+.selectorRibbon {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.selectorRibbon::-webkit-scrollbar { display: none; }
+
+.engineChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: var(--type-mono-xs);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.engineChip:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line);
+}
+
+.engineChipActive {
+  composes: engineChip;
+  color: var(--accent);
+  background: rgba(var(--accent-rgb, 88, 166, 255), 0.08);
+  border-color: rgba(var(--accent-rgb, 88, 166, 255), 0.3);
+  box-shadow: 0 0 12px rgba(var(--accent-rgb, 88, 166, 255), 0.12);
+}
+
+.chipDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.chipDotLive {
+  composes: chipDot;
+  background: var(--verified);
+  box-shadow: 0 0 6px var(--verified);
+  animation: chipPulse 2s infinite;
+}
+
+@keyframes chipPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Panel Container ─────────────────────────────────────────────────── */
+
+.panel {
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.panelHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.engineBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(var(--accent-rgb, 88, 166, 255), 0.1);
+  color: var(--accent);
+  font: var(--type-mono-xs);
+  letter-spacing: 0.06em;
+}
+
+.panelTitle {
+  font: var(--type-title-3);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.panelSubtitle {
+  font: var(--type-body-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.panelBody {
+  padding: var(--space-6);
+}
+
+/* ── Loading / Empty States ──────────────────────────────────────────── */
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.emptyIcon {
+  font-size: 32px;
+  opacity: 0.3;
+}
+
+/* ── Data Cards ──────────────────────────────────────────────────────── */
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.dataCard {
+  padding: var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  transition: all 0.2s ease;
+}
+
+.dataCard:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cardLabel {
+  font: var(--type-mono-xs);
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-1);
+}
+
+.cardValue {
+  font: var(--type-title-2);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.cardMeta {
+  font: var(--type-body-sm);
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* ── Finding Row ─────────────────────────────────────────────────────── */
+
+.findingRow {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  margin-bottom: var(--space-3);
+  transition: border-color 0.2s ease;
+}
+
+.findingRow:hover {
+  border-color: var(--line-strong);
+}
+
+.findingSeverity {
+  width: 3px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.findingSeverityCritical { composes: findingSeverity; background: var(--critical); }
+.findingSeverityWarning { composes: findingSeverity; background: var(--warning); }
+.findingSeverityInfo { composes: findingSeverity; background: var(--intel); }
+
+.findingBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.findingKind {
+  font: var(--type-mono-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.findingText {
+  font: var(--type-body-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.findingMeta {
+  font: var(--type-mono-xs);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── Hypothesis Matrix ───────────────────────────────────────────────── */
+
+.hypothesisBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.hypLabel {
+  font: var(--type-body-sm);
+  color: var(--text-primary);
+  min-width: 140px;
+}
+
+.hypBarTrack {
+  flex: 1;
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.hypBarFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.hypScore {
+  font: var(--type-mono-xs);
+  color: var(--text-secondary);
+  min-width: 50px;
+  text-align: right;
+}
+
+/* ── Action Cards (Next-Best) ────────────────────────────────────────── */
+
+.actionCard {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  margin-bottom: var(--space-3);
+  transition: all 0.2s ease;
+}
+
+.actionCard:hover {
+  border-color: rgba(var(--accent-rgb, 88, 166, 255), 0.3);
+  box-shadow: 0 2px 12px rgba(var(--accent-rgb, 88, 166, 255), 0.06);
+}
+
+.actionRank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb, 88, 166, 255), 0.1);
+  color: var(--accent);
+  font: var(--type-mono-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.actionBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.actionTitle {
+  font: var(--type-body);
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.actionInstructions {
+  font: var(--type-body-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.actionMeta {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.metaTag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font: var(--type-mono-xs);
+  letter-spacing: 0.04em;
+}
+
+.metaUrgent {
+  composes: metaTag;
+  background: rgba(255, 92, 92, 0.1);
+  color: var(--critical);
+}
+
+.metaCategory {
+  composes: metaTag;
+  background: rgba(var(--accent-rgb, 88, 166, 255), 0.08);
+  color: var(--accent);
+}
+
+.metaWindow {
+  composes: metaTag;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+}
+
+/* ── MO Playbook Match ───────────────────────────────────────────────── */
+
+.moMatch {
+  padding: var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  margin-bottom: var(--space-3);
+}
+
+.moName {
+  font: var(--type-body);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.moSimilarityBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.moBarTrack {
+  flex: 1;
+  height: 6px;
+  background: var(--surface-1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.moBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--intel));
+  transition: width 0.6s ease;
+}
+
+.moScore {
+  font: var(--type-mono-xs);
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* ── Counterfactual Summary ──────────────────────────────────────────── */
+
+.cfSummary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.cfMetric {
+  padding: var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  text-align: center;
+}
+
+.cfMetricValue {
+  font: var(--type-title-1);
+  color: var(--verified);
+  margin: 0;
+}
+
+.cfMetricLabel {
+  font: var(--type-mono-xs);
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: var(--space-1);
+}
+
+/* ── Cross-Case Collision ────────────────────────────────────────────── */
+
+.collisionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  margin-bottom: var(--space-2);
+}
+
+.collisionToken {
+  font: var(--type-mono-xs);
+  color: var(--warning);
+  min-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collisionCases {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.caseTag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font: var(--type-mono-xs);
+  background: rgba(var(--accent-rgb, 88, 166, 255), 0.08);
+  color: var(--accent);
+}
+
+/* ── Verifier HUD ────────────────────────────────────────────────────── */
+
+.verifierHud {
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-input);
+  border: 1px solid;
+}
+
+.verifierPassed {
+  composes: verifierHud;
+  border-color: rgba(80, 200, 120, 0.3);
+  background: rgba(80, 200, 120, 0.04);
+}
+
+.verifierFailed {
+  composes: verifierHud;
+  border-color: rgba(255, 92, 92, 0.3);
+  background: rgba(255, 92, 92, 0.04);
+}
+
+.verifierTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: var(--type-mono-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+
+.verifierPassedTitle { composes: verifierTitle; color: var(--verified); }
+.verifierFailedTitle { composes: verifierTitle; color: var(--critical); }
+
+.flagRow {
+  display: flex;
+  gap: var(--space-3);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.flagRow:last-child { border-bottom: none; }
+
+.flagSeverity {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font: var(--type-mono-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  min-width: 60px;
+  text-align: center;
+}
+
+.flagError { composes: flagSeverity; background: rgba(255, 92, 92, 0.12); color: var(--critical); }
+.flagWarn { composes: flagSeverity; background: rgba(255, 193, 7, 0.12); color: var(--warning); }
+.flagInfo { composes: flagSeverity; background: rgba(88, 166, 255, 0.12); color: var(--intel); }
+
+.flagMessage {
+  font: var(--type-body-sm);
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+/* ── Input Row ───────────────────────────────────────────────────────── */
+
+.inputRow {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.inputField {
+  flex: 1;
+  height: 40px;
+  padding: 0 var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  color: var(--text-primary);
+  font: var(--type-body-sm);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.inputField:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 88, 166, 255), 0.15);
+}
+
+.inputField::placeholder {
+  color: var(--text-muted);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .selectorRibbon {
+    gap: var(--space-1);
+  }
+
+  .engineChip {
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cfSummary {
+    grid-template-columns: 1fr 1fr;
+  }
+}

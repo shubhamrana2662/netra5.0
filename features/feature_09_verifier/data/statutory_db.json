@@ -1,0 +1,26 @@
+{
+  "_meta": {
+    "purpose": "Canonical statutory lookup for the deterministic output verifier. Seed entries verified against primary sources on 2026-09-06 (see source fields). Production build: regenerate from official MHA gazette PDFs and have the result reviewed by a qualified legal reviewer before operational use.",
+    "transition_date": "2024-07-01",
+    "transition_note": "BNS/BNSS/BSA replaced IPC/CrPC/Indian Evidence Act with effect from 1 July 2024."
+  },
+  "acts": {
+    "BNS": {"name": "Bharatiya Nyaya Sanhita, 2023", "replaces": "IPC"},
+    "BNSS": {"name": "Bharatiya Nagarik Suraksha Sanhita, 2023", "replaces": "CrPC"},
+    "BSA": {"name": "Bharatiya Sakshya Adhiniyam, 2023", "replaces": "IEA"},
+    "IT Act": {"name": "Information Technology Act, 2000", "replaces": null}
+  },
+  "sections": [
+    {"act": "BNS", "section": "318", "title": "Cheating", "status": "in_force", "source": "MHA official BNS text; BNS 318(4) = old IPC 420 (cheating and dishonestly inducing delivery of property)", "replaces": "IPC 420"},
+    {"act": "BNS", "section": "316", "title": "Criminal breach of trust", "status": "in_force", "source": "MHA official BNS text", "replaces": "IPC 406"},
+    {"act": "BNS", "section": "319", "title": "Cheating by personation", "status": "in_force", "source": "MHA official BNS text", "replaces": "IPC 419"},
+    {"act": "BNS", "section": "308", "title": "Extortion", "status": "in_force", "source": "MHA official BNS text", "replaces": "IPC 383-384"},
+    {"act": "BNSS", "section": "106", "title": "Seizure of property (incl. bank account freeze during investigation)", "status": "in_force", "source": "MHA BNSS text; LiveLaw analysis; Blue Sea Ventures v. State of AP (AP HC, 2025) notes evidentiary scope", "replaces": "CrPC 102"},
+    {"act": "BNSS", "section": "107", "title": "Attachment, forfeiture or restoration of property", "status": "in_force", "source": "MHA BNSS text", "replaces": "CrPC 102 provisos / 451-452 scheme"},
+    {"act": "BNSS", "section": "94", "title": "Summons to produce document or other thing (expressly covers electronic records)", "status": "in_force", "source": "MHA BNSS text; Indian Kanoon full text", "replaces": "CrPC 91"},
+    {"act": "BSA", "section": "63", "title": "Admissibility of electronic records; certificate under 63(4)(c)", "status": "in_force", "source": "MHA official BSA gazette PDF; Indian Kanoon", "replaces": "IEA 65B"},
+    {"act": "IT Act", "section": "66C", "title": "Identity theft", "status": "in_force", "source": "IT Act 2000 as amended"},
+    {"act": "IT Act", "section": "66D", "title": "Cheating by personation using computer resource", "status": "in_force", "source": "IT Act 2000 as amended"},
+    {"act": "IT Act", "section": "66A", "title": "Punishment for sending offensive messages through communication service", "status": "struck_down", "source": "Shreya Singhal v. Union of India, (2015) 5 SCC 1 — struck down in entirety, 24 March 2015", "replaces": null}
+  ]
+}

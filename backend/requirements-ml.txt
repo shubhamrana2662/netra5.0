@@ -1,0 +1,18 @@
+# CyberDrishti AI — Minimal ML Training Dependencies
+# Install only what's needed for training the NER models
+
+# Deep learning (custom transformer + HingBERT)
+torch>=2.5.0
+transformers>=4.46.0
+tokenizers>=0.20.1
+accelerate>=0.34.2
+datasets>=2.21.0
+
+# ML — NER/classification
+sklearn-crfsuite>=0.3.6
+scikit-learn>=1.5.2
+seqeval>=1.2.2
+
+# Basic utilities
+numpy>=1.26.4
+tqdm

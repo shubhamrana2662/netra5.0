@@ -1,0 +1,101 @@
+{
+  "audit_date": "2026-09-02",
+  "system_environment": {
+    "os": "macOS (Darwin arm64)",
+    "processor": "Apple M5",
+    "ram_bytes": 17179869184,
+    "disk_available_gib": 286,
+    "python_version": "3.12.13",
+    "node_version": "20+",
+    "database": {
+      "engine": "PostgreSQL 16.15 (Homebrew)",
+      "status": "online",
+      "host": "127.0.0.1:5432",
+      "database_name": "cyberdrishti",
+      "pgvector_installed": false
+    },
+    "vector_store": {
+      "engine": "ChromaDB (embedded SQLite)",
+      "persist_dir": "backend/artifacts/chroma_db",
+      "status": "online",
+      "collections_count": 21
+    },
+    "redis": {
+      "configured": "redis://localhost:6379/0",
+      "status": "offline / unused in runtime"
+    },
+    "ollama": {
+      "configured": "http://localhost:11434",
+      "status": "offline (graceful fallback active)"
+    }
+  },
+  "models": [
+    {
+      "name": "CRF NER Model",
+      "artifact_path": "backend/artifacts/crf/crf_model.pkl",
+      "size_bytes": 73728,
+      "metrics_artifact": "backend/artifacts/crf/eval_metrics.json",
+      "claimed_f1": 1.0,
+      "verified_f1": 1.0,
+      "audit_verdict": "FALSE/LEAKED",
+      "finding": "Severe data leakage: 100% of test sentences match a training template, and 125 test sentences (15.5%) are exact duplicates of training samples."
+    },
+    {
+      "name": "CyberDrishtiLM",
+      "artifact_path": "backend/artifacts/cyberdrishtilm/pytorch_model.bin",
+      "size_bytes": 4928307,
+      "metrics_artifact": "backend/artifacts/cyberdrishtilm/test_metrics.json",
+      "claimed_f1": 0.9489,
+      "verified_f1": 0.0059,
+      "audit_verdict": "FALSE/CONTRADICTED",
+      "finding": "Saved test metric in test_metrics.json shows ner_f1 = 0.005926. In validate_real_data.py, hardcoded dummy metrics (0.73 F1) are returned."
+    },
+    {
+      "name": "HingBERT",
+      "artifact_path": "backend/artifacts/hingbert/model.safetensors",
+      "size_bytes": 947912704,
+      "metrics_artifact": "backend/artifacts/hingbert/test_metrics.json",
+      "claimed_f1": 0.91,
+      "verified_f1": 0.1454,
+      "audit_verdict": "FALSE/CONTRADICTED",
+      "finding": "Saved test metric in test_metrics.json shows eval_ner_f1_macro = 0.145432. In validate_real_data.py, hardcoded dummy metrics (0.77 F1) are returned."
+    },
+    {
+      "name": "Hidden-Link Combiner (Logistic Regression)",
+      "artifact_path": "backend/artifacts/hidden_link_model.pkl",
+      "size_bytes": 1228,
+      "claimed_behavior": "Trained link prediction combiner with >=90% precision gate",
+      "verified_behavior": "Pickled dict containing LogisticRegression, StandardScaler, and threshold=0.8955",
+      "audit_verdict": "UNVERIFIED/VERSION_MISMATCH",
+      "finding": "Pickled with sklearn 1.5.2, loaded under 1.9.0. Evaluated only on synthetic case graphs, real investigative precision unmeasured."
+    },
+    {
+      "name": "AI Daya Copilot RAG",
+      "artifact_path": "backend/rag/copilot.py",
+      "claimed_behavior": "Multi-source evidence-grounded generative copilot",
+      "verified_behavior": "Hybrid retrieval with hardcoded synthetic case response fallback",
+      "audit_verdict": "PARTIALLY_SIMULATED",
+      "finding": "When Ollama is offline, non-existent or arbitrary cases fall back to hardcoded Case 02 (Ankita extortion scam) response and citations."
+    }
+  ],
+  "datasets": [
+    {
+      "split": "train",
+      "file": "backend/artifacts/training_data/train.jsonl",
+      "records": 6396,
+      "origin": "Synthetic template generator (backend/nlp/generate_ner_training_data.py)"
+    },
+    {
+      "split": "val",
+      "file": "backend/artifacts/training_data/val.jsonl",
+      "records": 795,
+      "origin": "Synthetic template generator"
+    },
+    {
+      "split": "test",
+      "file": "backend/artifacts/training_data/test.jsonl",
+      "records": 809,
+      "origin": "Synthetic template generator (100% template overlap with train)"
+    }
+  ]
+}

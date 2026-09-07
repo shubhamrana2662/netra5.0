@@ -1,0 +1,57 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; }
+body {
+  background: var(--canvas);
+  color: var(--text-primary);
+  font: var(--type-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: rgba(155, 138, 251, 0.25); }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; transition: transform 0.12s var(--ease-out); }
+button:not(:disabled):active { transform: scale(0.98); }
+input { font: inherit; }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; border-radius: 4px; }
+@media (forced-colors: active) {
+  :focus-visible { outline: 3px solid Highlight; }
+  .btn, .rItem, .bItem, .evCard, .entityCard { border: 1px solid ButtonBorder !important; }
+}
+kbd {
+  font: 400 11px var(--font-mono);
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+hr { border: 0; height: 1px; background: var(--line); }
+
+/* Editorial layout primitives */
+.page { position: relative; max-width: var(--col-data); margin: 0 auto; padding: var(--space-12) var(--gutter) var(--space-24); }
+.page-narrow { max-width: var(--col-narrow); }
+.measure { max-width: var(--col-reading); }
+.block { margin-top: var(--space-12); }
+.hairline-m { margin: var(--space-10) 0; }
+.empty { padding: var(--space-1) 0; }
+.empty-line { color: var(--text-secondary); }
+.empty-sub { color: var(--text-muted); font: var(--type-body-sm); margin-top: var(--space-1); }
+.figs { display: flex; gap: 56px; }
+.fig b { display: block; font: var(--type-title-1); letter-spacing: -0.02em; }
+.fig span {
+  display: block;
+  font: var(--type-mono-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: var(--space-2);
+}
+
+@media (max-width: 960px) {
+  .figs { gap: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}
