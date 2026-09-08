@@ -6,6 +6,7 @@ instead of duplicating the audit chain logic in each module.
 """
 import hashlib
 import json
+import uuid
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Tuple, Optional
 
@@ -62,10 +63,25 @@ async def append_audit(
 
     entry_hash = hashlib.sha256((prev_hash + entry_data).encode()).hexdigest()
 
+    # Bind the FK column as the PK's Python type. The cross-dialect UUID column
+    # (PG_UUID on Postgres, Uuid(as_uuid=True) on SQLite) binds via value.hex on
+    # SQLite and raises "'str' object has no attribute 'hex'" when handed a raw
+    # string. Callers pass str(current.id), which is exactly what the hash
+    # payload above must contain (the verifier in routes/audit.py recomputes with
+    # str(row.user_id)), so we keep the string in the hash but coerce a typed
+    # value for the column. Matches routes/cases._audit, which hashes str(user.id)
+    # yet binds user_id=user.id.
+    user_id_col: Optional[uuid.UUID] = None
+    if user_id is not None:
+        try:
+            user_id_col = uuid.UUID(str(user_id))
+        except (TypeError, ValueError):
+            user_id_col = None
+
     log = AuditLog(
         prev_hash=prev_hash,
         entry_hash=entry_hash,
-        user_id=user_id,
+        user_id=user_id_col,
         action=action,
         resource_type=resource_type,
         resource_id=resource_id,

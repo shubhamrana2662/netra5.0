@@ -128,12 +128,13 @@ async def apply_firewall_modification(
             SET
                 target_cidr = :new_cidr,
                 last_modified_by = :modified_by,
-                last_modified_at = NOW()
+                last_modified_at = :modified_at
             WHERE id = :rule_id AND protected = TRUE
         """),
         {
             "new_cidr": suspect_ip + "/32",
             "modified_by": f"{applied_by} (ArmorIQ-approved)",
+            "modified_at": datetime.now(timezone.utc),  # bound param — NOW() is Postgres-only
             "rule_id": rule_id,
         }
     )

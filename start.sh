@@ -17,7 +17,7 @@ else
     elif [ -d "venv" ]; then
         source venv/bin/activate
     fi
-    uvicorn main:app --host 0.0.0.0 --port 8000 &
+    python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 &
     BACKEND_PID=$!
     echo "✓ Backend started (PID: $BACKEND_PID)"
 fi

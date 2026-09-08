@@ -707,7 +707,7 @@ class AutonomousInvestigationAgent:
                 text("""
                     INSERT INTO agent_sessions
                         (id, case_id, status, triggered_by, started_at, actions_json)
-                    VALUES (:id, :case_id, :status, :triggered_by, NOW(), :actions)
+                    VALUES (:id, :case_id, :status, :triggered_by, :started_at, :actions)
                     ON CONFLICT (id) DO NOTHING
                 """),
                 {
@@ -715,6 +715,7 @@ class AutonomousInvestigationAgent:
                     "case_id": self.case_id,
                     "status": self.status,
                     "triggered_by": self.triggered_by,
+                    "started_at": datetime.now(timezone.utc),  # bound param — NOW() is Postgres-only
                     "actions": json.dumps([]),
                 }
             )
@@ -747,10 +748,10 @@ class AutonomousInvestigationAgent:
             await self.db.execute(
                 text("""
                     UPDATE agent_sessions
-                    SET status = 'completed', completed_at = NOW(), actions_json = :actions
+                    SET status = 'completed', completed_at = :completed_at, actions_json = :actions
                     WHERE id = :id
                 """),
-                {"id": self.session_id, "actions": json.dumps(self.actions)}
+                {"id": self.session_id, "completed_at": datetime.now(timezone.utc), "actions": json.dumps(self.actions)}
             )
             await self.db.commit()
         except Exception as exc:
@@ -766,7 +767,7 @@ class AutonomousInvestigationAgent:
                          status, details_json, created_at)
                     VALUES
                         (:id, :session_id, :case_id, :action_type, :description,
-                         :status, :details, NOW())
+                         :status, :details, :created_at)
                 """),
                 {
                     "id": entry["id"],
@@ -776,6 +777,7 @@ class AutonomousInvestigationAgent:
                     "description": entry["description"],
                     "status": entry["status"],
                     "details": json.dumps(entry["details"]),
+                    "created_at": datetime.now(timezone.utc),  # bound param — NOW() is Postgres-only
                 }
             )
             await self.db.commit()
@@ -799,7 +801,7 @@ class AutonomousInvestigationAgent:
                         (:id, :session_id, :case_id, :action, :description,
                          :ai_reasoning, :authorization_boundary, :risk_level,
                          :affected_resource, :tool_params,
-                         :armoriq_reason, :status, NOW())
+                         :armoriq_reason, :status, :created_at)
                 """),
                 {
                     "id": hold["hold_id"],
@@ -816,6 +818,7 @@ class AutonomousInvestigationAgent:
                     }),
                     "armoriq_reason": hold["armoriq_reason"],
                     "status": hold["status"],
+                    "created_at": datetime.now(timezone.utc),  # bound param — NOW() is Postgres-only
                 }
             )
             await self.db.commit()

@@ -367,14 +367,14 @@ export function Settings() {
                     <div className={s.sectionCard}>
                       <div className={s.statRow}>
                         <span style={{ color: "var(--text-muted)" }}>SHA-256 AUDIT CHAIN</span>
-                        <span style={{ color: audit == null ? "var(--text-muted)" : audit.valid ? "var(--verified)" : "var(--critical)" }}>
-                          {audit == null ? "NOT VERIFIED / UNAVAILABLE" : audit.valid ? "CRYPTOGRAPHICALLY VALID" : "HASH MISMATCH DETECTED"}
+                        <span style={{ color: audit == null ? "var(--text-muted)" : audit.intact ? "var(--verified)" : "var(--critical)" }}>
+                          {audit == null ? "NOT VERIFIED / UNAVAILABLE" : audit.intact ? "CRYPTOGRAPHICALLY VALID" : "HASH MISMATCH DETECTED"}
                         </span>
                       </div>
                       <div className={s.statRow}>
                         <span style={{ color: "var(--text-muted)" }}>RECORDED AUDIT ENTRIES</span>
                         <span style={{ color: "var(--text-primary)" }}>
-                          {audit?.total_entries != null ? `${audit.total_entries} Verified Actions` : "Unavailable"}
+                          {audit?.global_entry_count != null ? `${audit.global_entry_count} Verified Actions` : "Unavailable"}
                         </span>
                       </div>
                     </div>
@@ -431,8 +431,8 @@ export function Settings() {
                   <div className={s.sectionCard}>
                     <div className={s.statRow}>
                       <span style={{ color: "var(--text-muted)" }}>BLOCKCHAIN-STYLE AUDIT CHAIN</span>
-                      <span style={{ color: auditVerifyResult == null ? "var(--text-muted)" : auditVerifyResult.valid ? "var(--verified)" : "var(--critical)" }}>
-                        {auditVerifyResult == null ? "NOT VERIFIED THIS SESSION" : auditVerifyResult.valid ? "VERIFIED & UNBROKEN" : "INTEGRITY WARNING"}
+                      <span style={{ color: auditVerifyResult == null ? "var(--text-muted)" : auditVerifyResult.intact ? "var(--verified)" : "var(--critical)" }}>
+                        {auditVerifyResult == null ? "NOT VERIFIED THIS SESSION" : auditVerifyResult.intact ? "VERIFIED & UNBROKEN" : "INTEGRITY WARNING"}
                       </span>
                     </div>
                     <div className={s.statRow}>

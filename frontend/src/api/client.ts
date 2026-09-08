@@ -189,7 +189,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   const url = endpoint.startsWith("http") ? endpoint : `${API_BASE}${endpoint.startsWith("/") ? "" : "/"}${endpoint}`;
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  // Must exceed the backend's longest upstream wait (Ollama generate ≈ 25s in
+  // rag/copilot.py) so a slow-but-valid AI response is not aborted here and
+  // surfaced as a false failure. Callers may pass their own signal to override.
+  const REQUEST_TIMEOUT_MS = 30000;
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   const signal = options.signal || controller.signal;
 
   let res: Response;

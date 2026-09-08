@@ -2,8 +2,11 @@
 CyberDrishti AI — Audit Routes (Phase 7)
 Tamper-evident audit chain verification.
 """
+from __future__ import annotations
+
 import hashlib
 import json
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
@@ -15,6 +18,25 @@ from routes.auth import get_current_user, require_role
 from routes.case_access import require_case_access
 
 router = APIRouter()
+
+
+def _canonical_ts(dt: datetime | None) -> str:
+    """Reproduce the exact timestamp string that append_audit hashed.
+
+    append_audit hashes ``datetime.now(timezone.utc).isoformat()`` — a UTC
+    *aware* value ending in ``+00:00``. PostgreSQL (TIMESTAMPTZ) returns that
+    unchanged, but SQLite/aiosqlite drops the tzinfo on read, yielding a naive
+    datetime whose ``.isoformat()`` has no offset. Recomputing the chain with
+    that naive string produced a hash mismatch on every entry, so a perfectly
+    intact chain was reported BROKEN on SQLite deployments. Normalising the
+    read-back value back to UTC-aware makes verification reproduce the bytes
+    that were actually signed, on either dialect, without weakening tamper
+    detection (a real edit to any field still changes the hash).
+    """
+    if dt is None:
+        return ""
+    dt = dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else dt.astimezone(timezone.utc)
+    return dt.isoformat()
 
 
 @router.get("")
@@ -65,7 +87,12 @@ async def verify_global_audit_chain(
     if not rows:
         return {"intact": True, "global_entry_count": 0, "message": "No audit entries exist yet."}
 
+    # The chain's genesis anchor is the first link, whether that is an explicit
+    # GENESIS marker row or simply the first recorded action (this deployment
+    # does not seed a synthetic GENESIS row — the first real entry is chained
+    # from "0"*64, exactly as append_audit computed it).
     prev_hash = "0" * 64
+    genesis_hash: str = rows[0].entry_hash
     for row in rows:
         if row.action == "GENESIS":
             prev_hash = row.entry_hash
@@ -75,7 +102,7 @@ async def verify_global_audit_chain(
             "user_id":     str(row.user_id) if row.user_id else None,
             "resource_id": row.resource_id,
             "details":     row.details_json,
-            "timestamp":   row.event_timestamp.isoformat() if row.event_timestamp else "",
+            "timestamp":   _canonical_ts(row.event_timestamp),
         }, sort_keys=True)
 
         expected_hash = hashlib.sha256((prev_hash + entry_data).encode()).hexdigest()
@@ -87,7 +114,13 @@ async def verify_global_audit_chain(
             }
         prev_hash = row.entry_hash
 
-    return {"intact": True, "global_entry_count": len(rows), "status": "VERIFIED"}
+    return {
+        "intact": True,
+        "global_entry_count": len(rows),
+        "status": "VERIFIED",
+        "genesis_hash": genesis_hash,
+        "last_hash": prev_hash,
+    }
 
 
 @router.get("/verify/{case_id}")
@@ -118,7 +151,7 @@ async def verify_audit_chain(
             "user_id":     str(row.user_id) if row.user_id else None,
             "resource_id": row.resource_id,
             "details":     row.details_json,
-            "timestamp":   row.event_timestamp.isoformat() if row.event_timestamp else "",
+            "timestamp":   _canonical_ts(row.event_timestamp),
         }, sort_keys=True)
 
         expected_hash = hashlib.sha256((prev_hash + entry_data).encode()).hexdigest()

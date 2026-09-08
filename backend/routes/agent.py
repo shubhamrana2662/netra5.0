@@ -13,6 +13,8 @@ Endpoints:
 """
 import json
 import logging
+import uuid
+from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
@@ -30,6 +32,17 @@ router = APIRouter()
 # In-memory agent registry (session_id → agent instance)
 # For production: replace with Redis/DB-backed agent state
 _active_agents: dict = {}
+
+
+def _case_uuid(case_id: str):
+    """Coerce a case-id path param to uuid.UUID for binding against UUID columns.
+    On SQLite the UUID type binds via value.hex, so a raw string 500s
+    ('str' object has no attribute 'hex'). Returns None for a malformed id so
+    callers can return an empty result instead of erroring."""
+    try:
+        return case_id if isinstance(case_id, uuid.UUID) else uuid.UUID(str(case_id))
+    except (ValueError, AttributeError, TypeError):
+        return None
 
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
@@ -114,7 +127,7 @@ async def get_agent_status(
     # Fall back to DB
     query = (
         select(AgentSession)
-        .where(AgentSession.case_id == case_id)
+        .where(AgentSession.case_id == _case_uuid(case_id))
         .order_by(AgentSession.started_at.desc())
         .limit(1)
     )
@@ -180,7 +193,7 @@ async def list_agent_actions(
     """List all agent actions for a case with ArmorIQ enforcement states."""
     result = await db.execute(
         select(AgentAction)
-        .where(AgentAction.case_id == case_id)
+        .where(AgentAction.case_id == _case_uuid(case_id))
         .order_by(AgentAction.created_at.asc())
     )
     actions = result.scalars().all()
@@ -238,10 +251,10 @@ async def approve_hold(
         await db.execute(
             text("""
                 UPDATE agent_holds
-                SET status = 'approved', approved_by = :approved_by, resolved_at = NOW()
+                SET status = 'approved', approved_by = :approved_by, resolved_at = :resolved_at
                 WHERE id = :hold_id
             """),
-            {"hold_id": hold_id, "approved_by": current.username}
+            {"hold_id": hold_id, "approved_by": current.username, "resolved_at": datetime.now(timezone.utc)}
         )
         await db.commit()
         return result
@@ -250,10 +263,10 @@ async def approve_hold(
     await db.execute(
         text("""
             UPDATE agent_holds
-            SET status = 'approved', approved_by = :approved_by, resolved_at = NOW()
+            SET status = 'approved', approved_by = :approved_by, resolved_at = :resolved_at
             WHERE id = :hold_id
         """),
-        {"hold_id": hold_id, "approved_by": current.username}
+        {"hold_id": hold_id, "approved_by": current.username, "resolved_at": datetime.now(timezone.utc)}
     )
     await db.commit()
 
@@ -303,13 +316,14 @@ async def reject_hold(
             SET status = 'rejected',
                 rejected_by = :rejected_by,
                 rejection_reason = :reason,
-                resolved_at = NOW()
+                resolved_at = :resolved_at
             WHERE id = :hold_id
         """),
         {
             "hold_id": hold_id,
             "rejected_by": current.username,
             "reason": body.reason or "Rejected by human reviewer",
+            "resolved_at": datetime.now(timezone.utc),
         }
     )
     await db.commit()
@@ -365,10 +379,10 @@ async def get_armoriq_audit_trail(
     Return the complete ArmorIQ-enhanced audit trail for a case.
     Includes both agent actions and the SHA-256 chain entries.
     """
-    # Agent actions
+    # Agent actions (case_id is a UUID column — coerce; resource_id below is Text)
     actions_result = await db.execute(
         select(AgentAction)
-        .where(AgentAction.case_id == case_id)
+        .where(AgentAction.case_id == _case_uuid(case_id))
         .order_by(AgentAction.created_at.asc())
     )
     actions = actions_result.scalars().all()

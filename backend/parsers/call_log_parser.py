@@ -14,14 +14,16 @@ from rapidfuzz import fuzz, process
 # ── Column name aliases ───────────────────────────────────────────────────────
 
 _ALIASES: dict[str, list[str]] = {
-    "caller":        ["calling number", "caller", "a party", "msisdn a", "from", "source number", "a number"],
+    "caller":        ["calling number", "caller", "a party", "msisdn a", "msisdn", "subscriber", "from", "source number", "a number", "mobile", "phone"],
     "callee":        ["called number", "callee", "b party", "msisdn b", "to", "destination number", "b number"],
-    "call_datetime": ["date time", "call date time", "start time", "call start", "date", "datetime", "timestamp"],
+    "call_datetime": ["event_time_utc", "event time", "date time", "call date time", "start time", "call start", "datetime", "timestamp", "date"],
     "duration_sec":  ["duration", "call duration", "duration (sec)", "duration seconds", "secs", "seconds"],
-    "call_type":     ["call type", "type", "direction", "call direction"],
-    "cell_id":       ["cell id", "cell tower", "btsl", "lac/cell", "imei", "cell", "bts"],
-    "imei":          ["imei", "imei number", "device imei"],
+    "call_type":     ["call type", "event_type", "type", "direction", "call direction"],
+    "cell_id":       ["cell tower", "cell_tower", "cell id", "btsl", "lac/cell", "cell", "bts", "tower"],
+    "imei":          ["imei", "imei number", "device imei", "device_id", "device id"],
     "location":      ["location", "area", "cell location", "tower location"],
+    "lat":           ["latitude", "lat"],
+    "lon":           ["longitude", "long", "lon", "lng"],
 }
 
 
@@ -59,12 +61,28 @@ _DT_FMTS = [
 
 def _parse_dt(raw: str) -> str | None:
     raw = str(raw).strip()
+    if not raw or raw.lower() in ("nan", "none"):
+        return None
+    # ISO-8601 first (handles trailing 'Z' / UTC offset — common in CDR exports)
+    try:
+        return datetime.fromisoformat(raw.replace("Z", "+00:00")).isoformat()
+    except ValueError:
+        pass
     for fmt in _DT_FMTS:
         try:
             return datetime.strptime(raw, fmt).isoformat()
         except ValueError:
             continue
     return None
+
+
+def _to_float(raw) -> float | None:
+    if raw is None:
+        return None
+    try:
+        return float(str(raw).strip())
+    except (ValueError, TypeError):
+        return None
 
 
 # ── Duration normalisation ────────────────────────────────────────────────────
@@ -146,9 +164,11 @@ def parse_call_log_csv(
         cell_id   = _get("cell_id")
         imei      = _get("imei")
         location  = _get("location")
+        lat       = _to_float(_get("lat"))
+        lon       = _to_float(_get("lon"))
 
         if not caller and not callee:
-            continue  # Skip rows with no phone numbers
+            continue  # Skip rows with no subscriber / phone numbers
 
         duration = _parse_duration(dur_raw) if dur_raw else None
         ts = _parse_dt(dt_raw) if dt_raw else None
@@ -173,6 +193,8 @@ def parse_call_log_csv(
                 "cell_id":     cell_id,
                 "imei":        imei,
                 "location":    location,
+                "lat":         lat,
+                "lon":         lon,
             },
         })
 

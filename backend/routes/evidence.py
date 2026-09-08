@@ -243,6 +243,7 @@ async def _process_evidence_file(evidence_file_id: str | uuid.UUID, file_path: s
             # Lazy imports safely inside the try block
             from parsers.whatsapp_parser import parse_whatsapp_export
             from parsers.bank_pdf_parser import parse_bank_pdf
+            from parsers.bank_csv_parser import parse_bank_csv
             from parsers.call_log_parser import parse_call_log_csv
             from parsers.ocr_parser import parse_image_ocr
 
@@ -272,18 +273,12 @@ async def _process_evidence_file(evidence_file_id: str | uuid.UUID, file_path: s
                     except Exception:
                         events = []
                 else:
-                    lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
-                    for idx, line in enumerate(lines[1:], start=2):
-                        if line.strip():
-                            events.append({
-                                "source_doc": path.name,
-                                "timestamp": None,
-                                "text": line.strip(),
-                                "event_type": "bank_txn",
-                                "source_line": idx,
-                                "source_page": 1,
-                                "metadata": {"raw_line": line.strip()}
-                            })
+                    # Structured CSV parse (ledger + transfer schemas). Falls
+                    # back to raw-line capture below if it yields nothing.
+                    try:
+                        events = parse_bank_csv(path)
+                    except Exception:
+                        events = []
             elif detected_source_type == "cdr_call_log":
                 try:
                     events = parse_call_log_csv(path)
@@ -379,17 +374,19 @@ async def _process_evidence_file(evidence_file_id: str | uuid.UUID, file_path: s
                             if comp.get("verdict") == "VARIANT":
                                 diff = fp_engine.structural_diff(prev_dicts, events)
                                 ev_file.parse_error = f"[VARIANT] Appended document (+{len(diff.added)} new rows, {round(comp.get('overlap_ratio', 0.9)*100)}% containment with {prev_f.original_name})"
-                                await _audit(
-                                    db,
-                                    case_id=ev_file.case_id,
-                                    officer_id=ev_file.uploaded_by,
-                                    action="VARIANT_EVIDENCE_DETECTED",
-                                    details={
-                                        "parent_file": prev_f.original_name,
-                                        "containment": comp.get("overlap_ratio"),
-                                        "diff": diff.summary,
-                                    },
-                                )
+                                uploader = await db.get(User, ev_file.uploaded_by)
+                                if uploader is not None:
+                                    await _audit(
+                                        db,
+                                        uploader,
+                                        "VARIANT_EVIDENCE_DETECTED",
+                                        str(ev_file.case_id),
+                                        {
+                                            "parent_file": prev_f.original_name,
+                                            "containment": comp.get("overlap_ratio"),
+                                            "diff": diff.summary,
+                                        },
+                                    )
                                 break
                         except Exception:
                             pass
@@ -443,6 +440,25 @@ async def _process_evidence_file(evidence_file_id: str | uuid.UUID, file_path: s
                         span_end=len(sender_name.strip()),
                         extractor="sender_name",
                     ))
+
+                # Named transfer accounts (e.g. ACCT-MULE-11) are alphanumeric and
+                # are NOT matched by the digit-based ACCOUNT regex. Surface them as
+                # graph entities directly from the parsed structured metadata so
+                # money-flow edges form between the debit and credit parties.
+                _meta = evt.get("metadata") or {}
+                for _acct_key in ("from_account", "to_account", "account"):
+                    _acct = _meta.get(_acct_key)
+                    if _acct and isinstance(_acct, str):
+                        _acct = _acct.strip()
+                        if len(_acct) >= 3 and not _acct.isdigit():
+                            extracted_items.append(Extraction(
+                                entity_type="ACCOUNT",
+                                raw_value=_acct,
+                                norm_value=_acct.upper(),
+                                span_start=0,
+                                span_end=len(_acct),
+                                extractor="bank_csv_field",
+                            ))
 
                 for found in extracted_items:
                     canonical_value = str(found.norm_value if found.norm_value is not None else found.raw_value).strip()

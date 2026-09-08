@@ -46,18 +46,63 @@ class BenchmarkRequest(BaseModel):
 # ── Helper: pull case evidence from DB ────────────────────────────────────────
 
 async def _get_bank_events(db: AsyncSession, case_id: uuid.UUID) -> list[dict]:
-    """Retrieve bank transaction events with parsed credit/debit/balance."""
+    """Retrieve bank transaction events as structured rows.
+
+    Reads the structured metadata emitted by the CSV/PDF bank parsers
+    (model, credit, debit, balance, amount, from_account, to_account, …).
+    Falls back to the legacy positional raw_line split only for evidence that
+    was ingested before structured parsing existed. Each row is tagged with
+    `model` ('ledger'|'transfer') and `has_balance` so callers can route
+    ledger-continuity vs money-flow analysis without producing false findings.
+    """
     events = (await db.execute(
         select(EvidenceEvent).where(
             EvidenceEvent.case_id == case_id,
             EvidenceEvent.event_type == "bank_txn",
         ).order_by(EvidenceEvent.event_timestamp, EvidenceEvent.id)
     )).scalars().all()
-    rows = []
+
+    def _num(v) -> float:
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return 0.0
+
+    rows: list[dict] = []
     for ev in events:
         meta = ev.event_metadata or {}
+        ts = ev.event_timestamp.isoformat() if ev.event_timestamp else ""
+
+        # ── Structured path (current parsers) ──────────────────────────────
+        structured_keys = ("credit", "debit", "balance", "amount",
+                            "from_account", "to_account", "model")
+        if any(k in meta for k in structured_keys):
+            balance_raw = meta.get("balance")
+            balance = _num(balance_raw) if balance_raw not in (None, "") else None
+            credit = _num(meta.get("credit"))
+            debit = _num(meta.get("debit"))
+            amount_val = _num(meta.get("amount")) or credit or debit
+            model = meta.get("model") or ("ledger" if balance is not None else "transfer")
+            rows.append({
+                "credit": credit,
+                "debit": debit,
+                "balance": balance,
+                "amount": f"{amount_val:.2f}",
+                "amount_val": amount_val,
+                "timestamp": ts,
+                "reference": meta.get("ref_no") or meta.get("narration") or (ev.text_content or ""),
+                "from": meta.get("from_account"),
+                "to": meta.get("to_account"),
+                "upi": meta.get("upi_id"),
+                "account": meta.get("account") or meta.get("to_account") or meta.get("from_account") or "",
+                "event_type": "bank_txn",
+                "model": model,
+                "has_balance": balance is not None,
+            })
+            continue
+
+        # ── Legacy fallback: positional CSV split of raw_line ──────────────
         raw_line = meta.get("raw_line", ev.text_content or "")
-        # Try to parse CSV-style bank row
         parts = raw_line.strip().split(",") if raw_line else []
         try:
             if len(parts) >= 5:
@@ -66,11 +111,15 @@ async def _get_bank_events(db: AsyncSession, case_id: uuid.UUID) -> list[dict]:
                 balance = float(parts[-1])
                 rows.append({
                     "credit": credit, "debit": debit, "balance": balance,
-                    "timestamp": str(ev.event_timestamp or ""),
-                    "reference": ",".join(parts[1:-3]),
-                    "event_type": "bank_txn",
                     "amount": f"{credit or debit:.2f}",
+                    "amount_val": credit or debit,
+                    "timestamp": ts,
+                    "reference": ",".join(parts[1:-3]),
+                    "from": None, "to": None, "upi": None,
+                    "event_type": "bank_txn",
                     "account": meta.get("account", ""),
+                    "model": "ledger",
+                    "has_balance": True,
                 })
         except (ValueError, IndexError):
             pass
@@ -94,6 +143,20 @@ async def _get_call_events(db: AsyncSession, case_id: uuid.UUID) -> list[dict]:
             "source": meta.get("cell_id", "call"),
         })
     return result
+
+
+def _loc_label(ev: dict) -> str:
+    """Human-readable location for a travel-finding endpoint, built from the
+    real event dict (cell-tower/cell id plus tower-derived coordinates). No
+    fabrication — returns whatever the parsed CDR actually carried."""
+    src = ev.get("source") or "unknown"
+    lat, lon = ev.get("lat"), ev.get("lon")
+    if lat is not None and lon is not None:
+        try:
+            return f"{src} ({float(lat):.4f}, {float(lon):.4f})"
+        except (TypeError, ValueError):
+            pass
+    return str(src)
 
 
 async def _get_whatsapp_events(db: AsyncSession, case_id: uuid.UUID) -> list[dict]:
@@ -183,13 +246,23 @@ async def get_contradictions(
     bank_rows = await _get_bank_events(db, case.id)
     call_events = await _get_call_events(db, case.id)
 
-    ledger_findings = ledger_audit(bank_rows) if bank_rows else []
+    # Only balance-bearing (ledger) rows can be audited for running-balance
+    # continuity. Transfer-model rows (from/to/amount, no balance) would
+    # otherwise coerce to balance=0 and generate spurious ALTERED_BALANCE hits.
+    ledger_rows = [r for r in bank_rows if r.get("has_balance")]
+    ledger_findings = ledger_audit(ledger_rows) if ledger_rows else []
     travel_findings = impossible_travel(call_events) if call_events else []
 
     return {
         "case_id": str(case.id),
         "ledger_audit": {
-            "input_rows": len(bank_rows),
+            # Observability: distinguish "audit ran, found nothing" (completed)
+            # from "no balance-bearing rows to audit" (insufficient_input). A
+            # zero-finding result on zero input is NOT a clean-ledger verdict —
+            # the continuity audit could not run. `input_rows` counts only the
+            # ledger-shaped (has_balance) rows actually fed to the auditor.
+            "analysis_status": "completed" if ledger_rows else "insufficient_input",
+            "input_rows": len(ledger_rows),
             "findings": [
                 {"kind": f.kind, "row_index": f.row_index,
                  "expected_balance": f.expected_balance,
@@ -201,10 +274,14 @@ async def get_contradictions(
             ],
         },
         "impossible_travel": {
+            # Same distinction: no findings with input_events>0 means "checked,
+            # all movement physically plausible"; input_events==0 means there
+            # were no geolocated call events to check at all.
+            "analysis_status": "completed" if call_events else "insufficient_input",
             "input_events": len(call_events),
             "findings": [
                 {"kind": f.kind, "entity": f.entity,
-                 "location_a": f.location_a, "location_b": f.location_b,
+                 "location_a": _loc_label(f.event_a), "location_b": _loc_label(f.event_b),
                  "distance_km": f.distance_km, "time_gap_s": f.time_gap_s,
                  "velocity_kmh": f.velocity_kmh,
                  "explanation": f.explanation,
@@ -288,7 +365,11 @@ async def get_next_best_actions(
             tzinfo=timezone.utc if case.created_at.tzinfo is None else case.created_at.tzinfo
         )).total_seconds() / 3600
 
-    closing_balance = bank_rows[-1]["balance"] if bank_rows else 0.0
+    closing_balance = next((r["balance"] for r in reversed(bank_rows) if r.get("balance") is not None), None)
+    if closing_balance is None:
+        # Transfer-model data carries no running balance; approximate the funds
+        # at risk as the largest single traced transfer amount.
+        closing_balance = max((r.get("amount_val", 0.0) for r in bank_rows), default=0.0)
     phones = [e["value"] for e in entities if e["entity_type"] == "PHONE"]
 
     case_state = {
@@ -366,20 +447,36 @@ async def simulate_counterfactual_freeze(
     if not bank_rows:
         raise HTTPException(400, "No bank transaction data available for counterfactual simulation.")
 
-    # Build transfer edges from bank rows
+    # Build transfer edges. Prefer the parsed party-to-party transfer shape
+    # (debit_account → credit_account, amount); fall back to ledger credit/debit
+    # rows with a UPI counterparty parsed from the reference.
+    def _iso(ts: str) -> str | None:
+        if not ts:
+            return None
+        return ts if "T" in ts else ts + "T00:00:00"
+
     transfers = []
     for r in bank_rows:
-        ref = r.get("reference", "")
+        ts = _iso(r.get("timestamp", ""))
+        if not ts:
+            continue
+        if r.get("from") and r.get("to") and r.get("amount_val"):
+            transfers.append({
+                "from": str(r["from"]), "to": str(r["to"]),
+                "amount": r["amount_val"], "timestamp": ts,
+            })
+            continue
+        ref = r.get("reference", "") or ""
         upi_match = re.search(r"UPI/\d+/([\w.\-]+@[\w]+)", ref)
         if r.get("credit", 0) > 0 and upi_match:
             transfers.append({
                 "from": upi_match.group(1), "to": r.get("account", "ACCOUNT"),
-                "amount": r["credit"], "timestamp": r["timestamp"] + "T00:00:00" if "T" not in r["timestamp"] else r["timestamp"],
+                "amount": r["credit"], "timestamp": ts,
             })
         if r.get("debit", 0) > 0:
             transfers.append({
                 "from": r.get("account", "ACCOUNT"), "to": "UNKNOWN-" + ref[:10],
-                "amount": r["debit"], "timestamp": r["timestamp"] + "T00:00:00" if "T" not in r["timestamp"] else r["timestamp"],
+                "amount": r["debit"], "timestamp": ts,
             })
 
     result = simulate_freeze(transfers, body.freeze_account, body.freeze_time)
@@ -390,7 +487,7 @@ async def simulate_counterfactual_freeze(
         "assessment_type": result["assessment_type"],
         "blocked_debits": len(result["blocked_out_events"]),
         "stopped_credits": len(result["stopped_in_events"]),
-        "completed_transfers": len(result["completed"]),
+        "completed_transfers": result["completed_transfers"],
         "blocked_out_events": result["blocked_out_events"][:10],
         "stopped_in_events": result["stopped_in_events"][:10],
     }
@@ -524,10 +621,12 @@ async def generate_benchmark(
             typology_label = case["ground_truth"]["typology"].replace("_", " ").title()
             new_case = Case(
                 case_number=f"SYN-{body.seed}-{str(uuid.uuid4())[:6].upper()}",
-                domain=f"Synthetic · {typology_label}",
-                brief=f"DPDP 2023 compliant synthetic benchmark ({typology_label}). Seed: {body.seed}. {len(case['ground_truth']['entities'])} planted entities.",
-                status="ACTIVE",
-                created_by=current.id,
+                title=f"Synthetic Benchmark · {typology_label}",
+                description=f"DPDP 2023 compliant synthetic benchmark ({typology_label}). Seed: {body.seed}. {len(case['ground_truth']['entities'])} planted entities.",
+                crime_type=typology_label[:64],
+                priority="medium",
+                status="open",
+                assigned_officer_id=current.id,
             )
             db.add(new_case)
             await db.flush()

@@ -326,11 +326,13 @@ export function NetworkTab({ caseId: propCaseId }: { caseId?: string } = {}) {
       source: e.a,
       hops: [] as string[],
       sink: e.b,
-      amount: (e as any).amount || (e.score ? Math.round(e.score * 500000) : 75000),
+      // Real transacted amount only. If the evidence edge carries no amount we
+      // surface it as unknown rather than fabricating a figure from a score.
+      amount: typeof (e as any).amount === 'number' ? ((e as any).amount as number) : null,
       note: e.reason || 'Financial transaction correlation'
     }));
   }, [isDemo, allModelEdges]);
-  const totalTracedValue = caseFlows.reduce((n, f) => n + f.amount, 0);
+  const totalTracedValue = caseFlows.reduce((n, f) => n + (f.amount || 0), 0);
 
   // Dynamic 7-feature explainable hidden links
   const inferredHiddenLinks = useMemo(() => {
@@ -432,39 +434,6 @@ export function NetworkTab({ caseId: propCaseId }: { caseId?: string } = {}) {
     return s.stress ? s.stress.edges : allModelEdges.filter(e => s.revealed.has(e.a) && s.revealed.has(e.b));
   }, [allModelEdges]);
 
-  const generateFallbackReplayFrames = useCallback(() => {
-    const nodes = getModelNodes();
-    const edges = getModelEdges();
-    if (nodes.length === 0) {
-      showToast("No entities to replay");
-      return;
-    }
-    const framesCount = Math.max(5, Math.min(16, edges.length + 2));
-    const now = Date.now();
-    const mockFrames: ReplayFrame[] = [];
-    for (let i = 0; i < framesCount; i++) {
-      const ratio = (i + 1) / framesCount;
-      const visibleNodes = nodes.slice(0, Math.ceil(nodes.length * ratio)).map(n => n.id);
-      const visibleEdges = edges.slice(0, Math.ceil(edges.length * ratio)).map(e => ({
-        u: e.a,
-        v: e.b,
-        w: 1,
-        event_type: e.type || "transaction",
-      }));
-      mockFrames.push({
-        t_start: new Date(now - (framesCount - i) * 3600000).toISOString(),
-        t_end: new Date(now - (framesCount - i - 1) * 3600000).toISOString(),
-        nodes: visibleNodes,
-        edges: visibleEdges,
-        summary: { active_count: visibleNodes.length, burst: i === Math.floor(framesCount / 2) },
-      });
-    }
-    setReplayFrames(mockFrames);
-    setReplayFrameIdx(0);
-    applyReplayFrame(mockFrames[0]);
-    showToast(`Generated ${mockFrames.length} temporal replay frames`);
-  }, [getModelNodes, getModelEdges, applyReplayFrame, showToast]);
-
   const toggleReplay = useCallback(async () => {
     if (replayActive) {
       setReplayActive(false);
@@ -493,25 +462,27 @@ export function NetworkTab({ caseId: propCaseId }: { caseId?: string } = {}) {
     showToast("Loading Continuous-Time Dynamic Graph (CTDG) frames…");
 
     try {
-      if (caseId) {
-        const res = await cognitiveApi.networkReplay(caseId, 300, 1800);
-        if (res && res.frames && res.frames.length > 0) {
-          setReplayFrames(res.frames);
-          setReplayFrameIdx(0);
-          applyReplayFrame(res.frames[0]);
-          showToast(`Replay loaded · ${res.frames.length} continuous-time frames`);
-        } else {
-          generateFallbackReplayFrames();
-        }
+      const res = caseId ? await cognitiveApi.networkReplay(caseId, 300, 1800) : null;
+      if (res && res.frames && res.frames.length > 0) {
+        setReplayFrames(res.frames);
+        setReplayFrameIdx(0);
+        applyReplayFrame(res.frames[0]);
+        showToast(`Replay loaded · ${res.frames.length} continuous-time frames`);
       } else {
-        generateFallbackReplayFrames();
+        // No timestamped events on the server → no temporal graph to replay.
+        // Do NOT fabricate frames; report the honest empty state and exit.
+        setReplayFrames([]);
+        setReplayActive(false);
+        showToast("No timestamped events to replay for this case");
       }
     } catch {
-      generateFallbackReplayFrames();
+      setReplayFrames([]);
+      setReplayActive(false);
+      showToast("Network replay unavailable (backend error)");
     } finally {
       setReplayLoading(false);
     }
-  }, [replayActive, caseId, applyReplayFrame, generateFallbackReplayFrames, showToast]);
+  }, [replayActive, caseId, applyReplayFrame, showToast]);
 
   useEffect(() => {
     if (!replayPlaying || replayFrames.length === 0) return;
@@ -2055,7 +2026,7 @@ export function NetworkTab({ caseId: propCaseId }: { caseId?: string } = {}) {
                   <span className="fl-dot" />
                   <span className="fl-role">SINK</span>
                   <span className="fl-name">{allModelNodes.find(n => n.id === f.sink)?.name || f.sink}</span>
-                  <span className="fl-amt">{inr(f.amount)}</span>
+                  <span className="fl-amt">{f.amount != null ? inr(f.amount) : "Amount not recorded"}</span>
                 </div>
                 <div className="fl-note">{f.note}</div>
               </div>

@@ -6,6 +6,7 @@ stating it is NOT a replacement for the device custodian's certificate.
 """
 import hashlib
 import pathlib
+import uuid
 from datetime import datetime, timezone
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -156,25 +157,33 @@ async def generate_65b_pdf(
     Generate a Section 65B analysis-aid PDF for the given case.
     Returns the path to the generated PDF file.
     """
+    # UUID columns bind via value.hex on SQLite — a raw path string 500s
+    # ('str' object has no attribute 'hex'). Coerce once here; AuditLog.resource_id
+    # is Text (stores the string form) so that lookup keeps the original string.
+    try:
+        case_uuid = case_id if isinstance(case_id, uuid.UUID) else uuid.UUID(str(case_id))
+    except (ValueError, AttributeError, TypeError):
+        raise ValueError(f"Case {case_id} not found")
+
     # Fetch case
-    case = await db.get(Case, case_id)
+    case = await db.get(Case, case_uuid)
     if not case:
         raise ValueError(f"Case {case_id} not found")
 
     # Fetch evidence files
     ev_files = (await db.execute(
-        select(EvidenceFile).where(EvidenceFile.case_id == case_id)
+        select(EvidenceFile).where(EvidenceFile.case_id == case_uuid)
     )).scalars().all()
 
     # Fetch entities
     entities = (await db.execute(
-        select(Entity).where(Entity.case_id == case_id)
+        select(Entity).where(Entity.case_id == case_uuid)
     )).scalars().all()
 
     # Fetch flagged correlations
     correlations = (await db.execute(
         select(Correlation).where(
-            Correlation.case_id == case_id,
+            Correlation.case_id == case_uuid,
             Correlation.decision == "flagged",
         )
     )).scalars().all()

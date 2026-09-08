@@ -13,12 +13,22 @@ export interface SystemHealth {
 }
 
 export interface AuditVerification {
-  valid: boolean;
-  total_entries: number;
+  /** Recomputed tamper-evident chain integrity (true = unbroken from genesis). */
+  intact: boolean;
+  /** Total audit entries recomputed (global endpoint). */
+  global_entry_count?: number;
+  /** Entries scoped to a single case (per-case endpoint). */
+  case_entry_count?: number;
+  /** "VERIFIED" on success. */
+  status?: string;
+  /** Human-readable note (e.g. when no entries exist). */
+  message?: string;
+  /** Set when the chain is broken — the first entry whose hash failed. */
+  first_broken_entry_id?: number;
+  /** SHA-256 of the genesis entry (chain anchor). */
   genesis_hash?: string;
+  /** SHA-256 of the most recent verified entry. */
   last_hash?: string;
-  verified_at?: string;
-  details?: Record<string, unknown>;
 }
 
 export interface Officer {
@@ -45,6 +55,8 @@ export interface OfficerCreatePayload {
 export const systemApi = {
   health: () => apiClient.get<SystemHealth>("/health"),
   verifyAudit: () => apiClient.get<AuditVerification>("/audit/verify"),
+  verifyCaseAudit: (caseId: string) =>
+    apiClient.get<AuditVerification>(`/audit/verify/${encodeURIComponent(caseId)}`),
 };
 
 export const officersApi = {

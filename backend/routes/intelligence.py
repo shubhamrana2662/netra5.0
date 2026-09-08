@@ -55,14 +55,17 @@ async def communication_intelligence(
 
     for ev in call_events:
         meta = ev.event_metadata or {}
-        caller = meta.get("caller", "").strip()
-        callee = meta.get("callee", "").strip()
+        # Parser may store caller/callee as None (key present, value None) —
+        # `.get(k, "")` returns None in that case, so coerce with `or ""` before strip.
+        caller = (meta.get("caller") or "").strip()
+        callee = (meta.get("callee") or "").strip()
         if not caller or not callee:
             continue
 
         # Normalize pair (alphabetical sort for undirected)
         pair_key = tuple(sorted([caller, callee]))
-        duration = meta.get("duration", 0)
+        # CDR parser emits the canonical key `duration_sec` (not `duration`).
+        duration = meta.get("duration_sec", 0)
         try:
             dur_sec = int(duration) if str(duration).isdigit() else 0
         except (ValueError, TypeError):
@@ -119,7 +122,7 @@ async def communication_intelligence(
 
     for ev in wa_events:
         meta = ev.event_metadata or {}
-        sender = meta.get("sender", "Unknown").strip()
+        sender = (meta.get("sender") or "Unknown").strip()
 
         if sender not in sender_stats:
             sender_stats[sender] = {

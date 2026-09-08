@@ -40,7 +40,7 @@ async def tool_collect_security_logs(case_id: str, db) -> dict:
                     event_timestamp,
                     text_content,
                     source_line,
-                    event_metadata
+                    metadata AS event_metadata
                 FROM evidence_events
                 WHERE case_id = :case_id
                 ORDER BY event_timestamp ASC
@@ -200,28 +200,58 @@ async def tool_quarantine_account(
         return {"quarantined": False, "reason": "No entity_id provided — skipping"}
 
     try:
-        from sqlalchemy import text
-        result = await db.execute(
+        import json as _json
+
+        from sqlalchemy import bindparam, text
+
+        from db.models import Entity
+        # Read-modify-write instead of Postgres jsonb concat (`||`, `::jsonb`,
+        # `NOW()::text`), so the quarantine tag is applied identically on
+        # Postgres and SQLite. Same end state: node_metadata gains the three keys.
+        # The WHERE binds are kept byte-identical to the original statement.
+        sel = await db.execute(
             text("""
-                UPDATE entities
-                SET node_metadata = node_metadata || '{"quarantined": true, "quarantine_reason": "autonomous_agent_investigation", "quarantine_timestamp": "' || NOW()::text || '"}'::jsonb
+                SELECT node_metadata, canonical_value, entity_type
+                FROM entities
                 WHERE id = :entity_id AND case_id = :case_id
-                RETURNING canonical_value, entity_type
             """),
             {"entity_id": entity_id, "case_id": case_id}
         )
-        row = result.fetchone()
+        row = sel.fetchone()
+        if not row:
+            return {"quarantined": False, "reason": f"Entity {entity_id} not found in case {case_id}"}
+
+        current_meta = row.node_metadata or {}
+        if isinstance(current_meta, str):  # raw text() may return jsonb as a string
+            try:
+                current_meta = _json.loads(current_meta)
+            except (ValueError, TypeError):
+                current_meta = {}
+        quarantine_ts = datetime.now(timezone.utc).isoformat()
+        current_meta = {
+            **current_meta,
+            "quarantined": True,
+            "quarantine_reason": "autonomous_agent_investigation",
+            "quarantine_timestamp": quarantine_ts,
+        }
+
+        # Bind :meta with the column's own JSON type so SQLAlchemy serialises it
+        # correctly per-dialect (asyncpg jsonb codec / sqlite JSON text).
+        upd = text("""
+            UPDATE entities
+            SET node_metadata = :meta
+            WHERE id = :entity_id AND case_id = :case_id
+        """).bindparams(bindparam("meta", type_=Entity.__table__.c.node_metadata.type))
+        await db.execute(upd, {"meta": current_meta, "entity_id": entity_id, "case_id": case_id})
         await db.commit()
 
-        if row:
-            return {
-                "quarantined": True,
-                "entity_id": entity_id,
-                "entity_value": row.canonical_value,
-                "entity_type": row.entity_type,
-                "quarantine_timestamp": datetime.now(timezone.utc).isoformat(),
-            }
-        return {"quarantined": False, "reason": f"Entity {entity_id} not found in case {case_id}"}
+        return {
+            "quarantined": True,
+            "entity_id": entity_id,
+            "entity_value": row.canonical_value,
+            "entity_type": row.entity_type,
+            "quarantine_timestamp": quarantine_ts,
+        }
 
     except Exception as exc:
         logger.warning(f"[Tool] quarantine_account failed: {exc}")

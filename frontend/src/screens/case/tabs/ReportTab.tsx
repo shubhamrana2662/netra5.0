@@ -1,15 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Case } from "../../../data/types";
 import { Button } from "../../../components/primitives/Button";
 import { ANCHOR_TIMESTAMP } from "../../../data/thread";
 import { useLiveStore } from "../../../state/useLiveStore";
 import { reportsApi } from "../../../api/reports";
+import { systemApi, type AuditVerification } from "../../../api/system";
 import s from "../../../components/case/case.module.css";
 
 export function ReportTab({ caseData }: { caseData: Case }) {
   const { activeEvidence, activeCaseSummary } = useLiveStore();
   const [downloading, setDownloading] = useState(false);
   const [pdfGenerating, setPdfGenerating] = useState(false);
+
+  // Real tamper-evident audit-chain verification — replaces the previously
+  // hardcoded "master hash" / signer-node / "Cryptographically Verified" seal.
+  const [verifying, setVerifying] = useState(true);
+  const [verification, setVerification] = useState<AuditVerification | null>(null);
+  const [verifyError, setVerifyError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setVerifying(true);
+    setVerifyError(false);
+    systemApi
+      .verifyAudit()
+      .then(res => { if (!cancelled) setVerification(res); })
+      .catch(() => { if (!cancelled) setVerifyError(true); })
+      .finally(() => { if (!cancelled) setVerifying(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const chainIntact = verification?.intact === true;
+  const chainBroken = verification?.intact === false;
+  const chainEntries = verification?.global_entry_count ?? verification?.case_entry_count ?? null;
+  const sealText = verifying
+    ? "Verifying audit chain…"
+    : verifyError
+      ? "Chain verification unavailable"
+      : chainIntact
+        ? `✓ Audit chain verified${chainEntries != null ? ` · ${chainEntries} entries` : ""}`
+        : chainBroken
+          ? `⚠ Chain integrity failed${verification?.first_broken_entry_id != null ? ` (entry #${verification.first_broken_entry_id})` : ""}`
+          : "Chain status unknown";
 
   const handleDownloadPdf = async () => {
     setPdfGenerating(true);
@@ -53,10 +85,22 @@ export function ReportTab({ caseData }: { caseData: Case }) {
         sha256: e.sha256,
         meta: e.meta,
       })),
-      cryptographicSignature: {
+      integrityVerification: {
         hashAlgorithm: "SHA-256",
-        rootMasterHash: "e4b1029c8f3a09c812b74e6f9a0c1d2e3f4b5a6c7d8e9f0a1b2c3d4e5f6a7b8c",
-        signerNode: "CyberDrishti-IND-01-SECURE-ENCLAVE",
+        method: "Tamper-evident audit hash chain, recomputed from genesis",
+        auditChainIntact: verification ? verification.intact : null,
+        auditChainEntries: chainEntries,
+        genesisHash: verification?.genesis_hash ?? null,
+        lastHash: verification?.last_hash ?? null,
+        firstBrokenEntryId: verification?.first_broken_entry_id ?? null,
+        verificationStatus: verifying
+          ? "PENDING"
+          : verifyError
+            ? "UNAVAILABLE"
+            : verification?.intact
+              ? "VERIFIED"
+              : "FAILED",
+        verifiedAt: verification && !verifyError ? new Date().toISOString() : null,
       },
     };
 
@@ -95,7 +139,20 @@ export function ReportTab({ caseData }: { caseData: Case }) {
             <span className="t-mono-xs" style={{ color: "var(--text-muted)" }}>
               CERTIFICATE NO: BSA-2026-{caseData.id.slice(-6)}/SEC63
             </span>
-            <span className={s.certSeal}>✓ Cryptographically Verified</span>
+            <span
+              className={chainIntact ? s.certSeal : undefined}
+              style={
+                chainIntact
+                  ? undefined
+                  : {
+                      font: "var(--type-mono-xs)",
+                      letterSpacing: "0.04em",
+                      color: chainBroken ? "var(--critical, #F43F5E)" : "var(--text-muted)",
+                    }
+              }
+            >
+              {sealText}
+            </span>
           </div>
           <h2 className="t-title-2" style={{ marginBottom: "var(--space-2)" }}>
             CERTIFICATE OF ELECTRONIC EVIDENCE

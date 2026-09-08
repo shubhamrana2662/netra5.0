@@ -363,14 +363,36 @@ async def verify_correlation(
     current: User = Depends(require_role("io", "fiu_analyst", "admin")),
 ):
     """Investigator confirms or disputes a flagged hidden link."""
-    corr = await db.get(Correlation, correlation_id)
+    # Coerce the path id to the PK's Python type before db.get. The cross-dialect
+    # UUID column (Uuid(as_uuid=True) on SQLite) binds via value.hex and raises
+    # 'str has no attribute hex' if handed a raw string — so a bare db.get with
+    # the path string 500s on SQLite. Matches routes/case_access.require_case_access.
+    try:
+        corr_uuid = uuid.UUID(str(correlation_id))
+    except (TypeError, ValueError):
+        raise HTTPException(404, "Correlation not found")
+    corr = await db.get(Correlation, corr_uuid)
     if not corr:
         raise HTTPException(404, "Correlation not found")
+
+    # Case isolation: a correlation may only be verified by someone with access
+    # to the case it belongs to (admin, or the assigned officer). Without this
+    # an authenticated user could mutate the verdict of any case's correlation
+    # by ID (IDOR). require_case_access raises 404 for inaccessible cases.
+    await require_case_access(db, current, str(corr.case_id), write=True)
 
     if payload.verdict not in ("confirmed", "disputed"):
         raise HTTPException(400, "verdict must be 'confirmed' or 'disputed'")
 
-    corr.decision = payload.verdict
+    # Map the investigator's verdict onto the detector-decision domain the schema
+    # permits (CHECK ck_correlations_decision IN ('flagged','not_flagged')).
+    # verified_by/verified_at record that a human reviewed the link; `decision`
+    # holds the post-review truth — a confirmed link stays flagged, a disputed one
+    # becomes not_flagged and correctly drops out of the flagged list. The exact
+    # human verdict is preserved verbatim in the tamper-evident audit entry below,
+    # so no information is lost. Writing the raw verdict into `decision` would
+    # violate the CHECK constraint and 500 on every verification.
+    corr.decision = "flagged" if payload.verdict == "confirmed" else "not_flagged"
     corr.verified_by = current.id
     corr.verified_at = datetime.now(timezone.utc)
     if payload.notes:
